@@ -58,7 +58,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="institution">Unit Price</label>
-                                <input type="number" class="form-control" id="customer" placeholder="Enter Unit Price" value="" name="unit_price" value="{{ $payment->unit_price }}" required>
+                                <input type="number" class="form-control" id="customer" placeholder="Enter Unit Price" name="unit_price" value="{{ $payment->unit_price }}" required>
                                 
                               </div>
                             <div class="form-group">
@@ -69,6 +69,21 @@
                             <div class="form-group">
                                 <label for="institution">Booked By</label>
                                 <input type="text" class="form-control" id="customer" placeholder="Booked By" name="booked_by" value="{{ $payment->booked_by }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="institution">Phone Number</label>
+                                <input type="text" class="form-control" id="customer" placeholder="Phone Number" name="phone_number" value="{{ $payment->phone_number ?? '' }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="institution">Identification Number</label>
+                                <input type="text" class="form-control" id="customer" placeholder="Identification Number" name="id_number" value="{{ $payment->id_number ?? '' }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="institution">Caution Amount</label>
+                                <input type="text" class="form-control" id="customer" placeholder="Caution Amount" name="caution" value="{{ $payment->caution ?? '' }}">
                             </div>
 
                             <button type="submit" class="btn btn-primary">Submit</button>

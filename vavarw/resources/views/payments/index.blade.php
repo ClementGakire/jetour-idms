@@ -69,7 +69,8 @@
             <th class="text-center">Client</th>
               <th class="text-center">Driver</th>
               <th class="text-center">Driver Phone</th>
-              <th class="text-center">Advance</th>
+                <th class="text-center">Advance</th>
+                <th class="text-center">Caution</th>
             <th class="text-center">Status</th>
             <th class="text-center">Booked By</th>
             @if(Auth::user()->id == 1)
@@ -152,6 +153,8 @@
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
+                    @php $caution = $payment->caution ?? $payment->caution_amount ?? null; @endphp
+                    <td class="text-center">{{ $status !== 'Parking' && $caution ? number_format($caution) : '' }}</td>
           <td class="text-center">
             <span class="badge {{ $badgeClass }}">{{ $status }}</span>
           </td>
@@ -211,6 +214,7 @@
   <th class="text-center">Driver</th>
   <th class="text-center">Driver Phone</th>
   <th class="text-center">Advance</th>
+  <th class="text-center">Caution</th>
       <th class="text-center">Status</th>
       <th class="text-center">Booked By</th>
       @if(Auth::user()->id == 1)
@@ -254,7 +258,8 @@
         <td class="text-center">{{ $payment->client }}</td>
     <td class="text-center">{{ $payment->driver_name ?? '' }}</td>
     <td class="text-center">{{ $payment->driver_phone ?? '' }}</td>
-    <td class="text-center">{{ $payment->advance ?? '' }}</td>
+  <td class="text-center">{{ $payment->advance ?? '' }}</td>
+  <td class="text-center">{{ $payment->caution ?? $payment->caution_amount ?? '' }}</td>
         <td class="text-center">{{ $status }}</td>
         <td class="text-center">{{ $payment->username }}</td>
         @if(Auth::user()->id == 1)
