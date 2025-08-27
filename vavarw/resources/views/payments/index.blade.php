@@ -86,25 +86,36 @@
     $numDays = $bookingDate && $returnDate ? $bookingDate->diffInDays($returnDate) + 1 : 0;
     $totalPrice = $numDays * ($payment->unit_price ?? 0);
 
-    // Initialize status variables
-    $status = ''; // Default status to avoid missing cars
-    $statusClass = ''; // No flashing by default
+  // Initialize status variables
+  $status = ''; // Default status to avoid missing cars
 
-    // Check booking dates and supplier conditions
-    if ($bookingDate === null || $returnDate === null || $returnDate->lt($today)) {
-        // If no booking/return date, show "Parking" if supplier_id is 11
-        if ($payment->supplier_id == 11) {
-            $status = 'Parking';
-        }
-    } elseif ($today->lt($bookingDate)) {
-        // If booking date is in the future, status is 'Booked'
-        $status = 'Booked';
-        $statusClass = 'flash text-white'; // Flashing for booked status
-    } elseif (($today->gte($bookingDate)) && ($today->lte($returnDate))) {
-        // Check if today is between booking and return date, inclusive
-        $status = 'Deployed';
-        $statusClass = 'flash text-white'; // Flashing for deployed status
+  // Check booking dates and supplier conditions
+  if ($bookingDate === null || $returnDate === null || $returnDate->lt($today)) {
+    // If no booking/return date, show "Parking" if supplier_id is 11
+    if ($payment->supplier_id == 11) {
+      $status = 'Parking';
     }
+  } elseif ($today->lt($bookingDate)) {
+    // If booking date is in the future, status is 'Booked'
+    $status = 'Booked';
+  } elseif (($today->gte($bookingDate)) && ($today->lte($returnDate))) {
+    // Check if today is between booking and return date, inclusive
+    $status = 'Deployed';
+  }
+
+  // Determine badge class for visual styling (applies subtle flash for Deployed/Booked)
+  $badgeClass = '';
+  if ($status === 'Deployed') {
+    $badgeClass = 'badge-deployed flash text-white';
+  } elseif ($status === 'Booked') {
+    $badgeClass = 'badge-booked flash text-white';
+  } elseif ($status === 'Completed') {
+    $badgeClass = 'badge-completed';
+  } elseif ($status === 'Parking') {
+    $badgeClass = 'badge-parking';
+  } else {
+    $badgeClass = 'badge-secondary';
+  }
 @endphp
 
 
@@ -141,9 +152,9 @@
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
-                    <td class="text-center {{ $statusClass }}">
-                        {{ $status }}
-                    </td>
+          <td class="text-center">
+            <span class="badge {{ $badgeClass }}">{{ $status }}</span>
+          </td>
                     <td class="text-center">
                         {{ $status !== 'Parking' ? ($payment->username ?? '') : '' }}
                     </td>
@@ -153,7 +164,7 @@
                                 <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}">
                                     {{ csrf_field() }}
                                     <input type="hidden" name="_method" value="delete">
-                                    <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $payment->id }})">
+                                    <button type="button" class="btn btn-danger delete-button" data-id="{{ $payment->id }}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -252,7 +263,7 @@
                   <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}">
                       {{ csrf_field() }}
                       <input type="hidden" name="_method" value="delete">
-                      <button type="button" class="btn btn-danger" onclick="confirmDelete({{ $payment->id }})">
+                      <button type="button" class="btn btn-danger delete-button" data-id="{{ $payment->id }}">
                           <i class="fas fa-trash"></i>
                       </button>
                   </form>
@@ -300,8 +311,8 @@ $(document).ready(function() {
     changeYear: true,
     dateFormat: 'dd-mm-yy',
     onSelect: function() {
-      console.log("Min date selected");
-      table.draw();
+    console.log("Min date selected");
+    $('table.display').each(function() { $(this).DataTable().draw(); });
     }
   });
   
@@ -310,26 +321,40 @@ $(document).ready(function() {
     changeYear: true,
     dateFormat: 'dd-mm-yy',
     onSelect: function() {
-      console.log("Max date selected");
-      table.draw();
+  console.log("Max date selected");
+  $('table.display').each(function() { $(this).DataTable().draw(); });
     }
   });
     
-  // Initialize DataTables with Buttons
-    var table = $('table.display').DataTable({
-    dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
-         "<'row'<'col-sm-12'tr>>" +
-         "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-    buttons: [
-      'copy',  // Copy to clipboard
-      'csv',   // Export to CSV
-      'excel', // Export to Excel
-      'pdf',   // Export to PDF
-      'print'  // Print view
-    ],
-    lengthChange: true,
-    pageLength: 10,
-    lengthMenu: [[10, 25, 50, 100, 150, 200, -1], [10, 25, 50, 100, 150, 200, "All"]]
+  // Initialize each DataTable with Buttons and compute Unpaid totals per table
+  $('table.display').each(function() {
+    var $tbl = $(this);
+    $tbl.DataTable({
+      dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
+           "<'row'<'col-sm-12'tr>>" +
+           "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+      buttons: [ 'copy','csv','excel','pdf','print' ],
+      lengthChange: true,
+      pageLength: 10,
+      lengthMenu: [[10,25,50,100,150,200,-1],[10,25,50,100,150,200,'All']],
+      drawCallback: function(settings) {
+        var api = this.api();
+        var unpaidIndex = $tbl.find('thead th').filter(function() {
+          return $(this).text().trim() === 'Unpaid Amount';
+        }).index();
+        if (unpaidIndex === -1) return;
+        var total = 0;
+        api.column(unpaidIndex, {search: 'applied'}).nodes().to$().each(function() {
+          var txt = $(this).text().replace(/,/g,'').trim();
+          if (txt !== '') {
+            var v = parseFloat(txt);
+            if (!isNaN(v)) total += v;
+          }
+        });
+        var $summary = $tbl.nextAll('.unpaid-summary').first().find('.unpaid-total');
+        if ($summary.length) $summary.text(total.toLocaleString());
+      }
+    });
   });
 
   // Custom filtering function for date range
@@ -362,6 +387,12 @@ $(document).ready(function() {
     changeYear: true,
     dateFormat: 'dd-mm-yy'
   });
+});
+
+// Attach delete handler to buttons using data-id to avoid inline Blade-in-JS syntax
+$(document).on('click', '.delete-button', function(e) {
+  var id = $(this).data('id');
+  confirmDelete(id);
 });
 
 function confirmDelete(id) {
