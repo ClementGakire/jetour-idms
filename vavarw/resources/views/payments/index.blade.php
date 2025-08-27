@@ -176,9 +176,8 @@
                 <a href="/payments/{{ $payment->id }}/edit">
                   <i class="fas fa-edit text-success"></i>
                 </a>
-                            @endif
-                        </td>
-                    @endif
+            </td>
+          @endif
                 </tr>
             @endif
 
