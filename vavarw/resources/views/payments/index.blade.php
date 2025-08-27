@@ -4,14 +4,36 @@
 @section('content')
 @if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Payments') !== false)
 <style>
-  @keyframes flash {
-    0% { background-color: #DE6223; opacity: 1; }
-    50% { background-color: rgba(222, 98, 35, 0.5); }
-    100% { background-color: #DE6223; opacity: 1; }
+  /* Subtle pulsing for active statuses */
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(222,98,35,0.35); }
+    70% { box-shadow: 0 0 12px 6px rgba(222,98,35,0.12); }
+    100% { box-shadow: 0 0 0 0 rgba(222,98,35,0); }
   }
-  
-  .flash {
-    animation: flash 1s infinite;
+
+  .flash { animation: pulse 1.8s infinite; }
+
+  /* Table visuals */
+  table.table { border-collapse: separate; border-spacing: 0; }
+  table.table thead th { background:#f7f9fb; color:#222; font-weight:700; border-bottom:2px solid #e9eef3; padding:10px 12px; }
+  table.table tbody td { padding:10px 12px; vertical-align:middle; }
+  table.table.table-striped tbody tr:nth-of-type(odd) { background: #ffffff; }
+  table.table.table-striped tbody tr:nth-of-type(even) { background: #fbfdff; }
+
+  /* Badges for status */
+  .badge { display:inline-block; padding:6px 10px; border-radius:6px; font-size:12px; font-weight:600; }
+  .badge-deployed { background:#DE6223; color:#fff; }
+  .badge-booked { background:#17a2b8; color:#fff; }
+  .badge-completed { background:#6c757d; color:#fff; }
+  .badge-parking { background:#343a40; color:#fff; }
+
+  /* Unpaid summary */
+  .unpaid-summary { background: #f8f9fb; border-top:1px solid #e9eef3; margin-top:6px; padding:10px 16px; border-radius:4px; }
+
+  /* Small screens: reduce padding */
+  @media (max-width: 768px) {
+    table.table thead th, table.table tbody td { padding:8px 6px; font-size:12px; }
+    .unpaid-summary { font-size:13px; padding:8px; }
   }
 </style>
 
@@ -33,7 +55,7 @@
 
             @foreach($groupedPayments as $modelName => $modelPayments)
               <h3 class="text-muted text-center mb-3">{{ $modelName }}</h3>
-              <table class="table display" style="width:100%">
+        <table class="table display table-striped table-bordered table-hover" style="width:100%; font-size:13px;">
     <thead>
         <tr>
             <th class="text-center">S/No</th>
@@ -43,6 +65,7 @@
             <th class="text-center">Return Date</th>
             <th class="text-center">Unit Price</th>
             <th class="text-center">Total Price</th>
+              <th class="text-center">Unpaid Amount</th>
             <th class="text-center">Client</th>
               <th class="text-center">Driver</th>
               <th class="text-center">Driver Phone</th>
@@ -99,11 +122,21 @@
                     <td class="text-center">
                         {{ $status !== 'Parking' && $payment->unit_price ? number_format($payment->unit_price) : '' }}
                     </td>
+          <td class="text-center">
+            {{ $status !== 'Parking' && $totalPrice ? number_format($totalPrice) : '' }}
+          </td>
+          <td class="text-center">
+            @php
+              $advance = $payment->advance ?? 0;
+              $unpaid = ($totalPrice && $status !== 'Parking') ? max(0, $totalPrice - $advance) : null;
+            @endphp
+            {{ $unpaid !== null ? number_format($unpaid) : '' }}
+          </td>
                     <td class="text-center">
-                        {{ $status !== 'Parking' && $totalPrice ? number_format($totalPrice) : '' }}
-                    </td>
-                    <td class="text-center">
-                        {{ $status !== 'Parking' ? ($payment->client ?? '') : '' }}
+            @if($status !== 'Parking')
+              <div>{{ $payment->client ?? '' }}</div>
+              <div style="font-size:11px;color:#555;">{{ $payment->phone_number ?? '' }}</div>
+            @endif
                     </td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
@@ -136,6 +169,7 @@
         @endforeach
     </tbody>
 </table>
+<div class="unpaid-summary text-right" style="padding:8px 12px; font-weight:600;">Total unpaid: <span class="unpaid-total">0</span></div>
             @endforeach
             <h3 class="text-muted text-center mb-3">Booking History</h3>
             <table border="0" cellspacing="5" cellpadding="5" style="padding-top: 45px; padding-bottom: 45px;">
@@ -161,6 +195,7 @@
       <th class="text-center">Return Date</th>
       <th class="text-center">Unit Price</th>
       <th class="text-center">Total Price</th>
+  <th class="text-center">Unpaid Amount</th>
       <th class="text-center">Client</th>
   <th class="text-center">Driver</th>
   <th class="text-center">Driver Phone</th>
@@ -231,6 +266,7 @@
     @endforeach
   </tbody>
 </table>
+<div class="unpaid-summary text-right" style="padding:8px 12px; font-weight:600;">Total unpaid: <span class="unpaid-total">0</span></div>
 
 
           </div>
