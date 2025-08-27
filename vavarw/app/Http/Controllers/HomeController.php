@@ -103,7 +103,7 @@ class HomeController extends Controller
       ->where(function($q) use ($today) {
         $q->whereNull('return_date')->orWhere('return_date', '>=', $today);
       })
-      ->pluck('plate')
+      ->pluck('car_id')
       ->unique()
       ->toArray();
 
