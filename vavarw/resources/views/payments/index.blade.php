@@ -195,7 +195,7 @@
   </tbody>
 </table>
 
-<table class="table display" style="width:100%">
+<table id="history-table" class="table display" style="width:100%">
   <thead>
     <tr>
       <th class="text-center">S/No</th>
@@ -357,19 +357,50 @@ $(document).ready(function() {
     });
   });
 
-  // Custom filtering function for date range
+  // Ensure the history table has a dedicated DataTable configuration (if present)
+  if ($('#history-table').length) {
+    $('#history-table').DataTable().draw();
+  }
+
+  // Custom filtering function for date range (robust parsing for dd-mm-yy, dd/mm/yyyy, etc.)
   $.fn.dataTable.ext.search.push(
     function(settings, data, dataIndex) {
       var min = $('.min').datepicker("getDate");
       var max = $('#max').datepicker("getDate");
-      var bookingDate = new Date(data[4]); // Column index for "Booking Date"
+      var bookingDateStr = data[4] || '';
 
-      if ((min == null && max == null) || 
-          (min == null && bookingDate <= max) ||
-          (max == null && bookingDate >= min) || 
-          (bookingDate >= min && bookingDate <= max)) {
+      function parseDateStr(s) {
+        s = (s || '').toString().trim();
+        if (!s) return null;
+        // Try formats like dd-mm-yyyy or dd-mm-yy or dd/mm/yyyy
+        var parts = s.split(/[-\/\.]/);
+        if (parts.length === 3) {
+          var d = parseInt(parts[0], 10);
+          var m = parseInt(parts[1], 10) - 1;
+          var y = parseInt(parts[2], 10);
+          if (y < 100) y += 2000;
+          return new Date(y, m, d);
+        }
+        // Fallback to native parse
+        var t = Date.parse(s);
+        return isNaN(t) ? null : new Date(t);
+      }
+
+      var bookingDate = parseDateStr(bookingDateStr);
+
+      // If no filters are set allow the row
+      if (min == null && max == null) {
         return true;
       }
+
+      // If bookingDate is not parseable, exclude when any filter is set
+      if (bookingDate == null) {
+        return false;
+      }
+
+      if (min == null && bookingDate <= max) return true;
+      if (max == null && bookingDate >= min) return true;
+      if (bookingDate >= min && bookingDate <= max) return true;
       return false;
     }
   );
