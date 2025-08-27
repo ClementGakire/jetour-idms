@@ -79,8 +79,9 @@
               <th class="text-center">Driver Phone</th>
                 <th class="text-center">Advance</th>
                 <th class="text-center">Caution</th>
-                <th class="text-center">Checked</th>
+                
             <th class="text-center">Status</th>
+            <th class="text-center">Checked</th>
             <th class="text-center">Booked By</th>
             @if(Auth::user()->id == 1)
                 <th class="text-center">Action</th>
