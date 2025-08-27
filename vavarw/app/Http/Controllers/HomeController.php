@@ -98,10 +98,10 @@ class HomeController extends Controller
       ->get();
     $plaques_today = $assigned_today->pluck('plate_number')->unique()->filter()->values()->all();
 
-    // Fleet availability: consider "active" cars as those with a roadmap whose received_on is null or >= today
-    $active_car_ids = DB::table('roadmaps')
+    // Fleet availability: consider "active" cars as those with a payment whose return_date is null or >= today
+    $active_car_ids = DB::table('payments')
       ->where(function($q) use ($today) {
-        $q->whereNull('received_on')->orWhere('received_on', '>=', $today);
+        $q->whereNull('return_date')->orWhere('return_date', '>=', $today);
       })
       ->pluck('plate')
       ->unique()
@@ -117,14 +117,14 @@ class HomeController extends Controller
         ->unique()
         ->toArray();
 
-      // In rental: active roadmaps covering today
-      $in_rental_ids = DB::table('roadmaps')
-        ->whereIn('plate', $active_car_ids)
-        ->whereDate('created_on', '<=', $today)
+      // In rental: active payments covering today
+      $in_rental_ids = DB::table('payments')
+        ->whereIn('car_id', $active_car_ids)
+        ->whereDate('created_at', '<=', $today)
         ->where(function($q) use ($today){
-          $q->whereNull('received_on')->orWhere('received_on', '>=', $today);
+          $q->whereNull('return_date')->orWhere('return_date', '>=', $today);
         })
-        ->pluck('plate')
+        ->pluck('car_id')
         ->unique()
         ->toArray();
 
