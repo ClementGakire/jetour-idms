@@ -9,6 +9,7 @@ use App\Car;
 use Illuminate\Http\Request;
 use App\User;
 use DB;
+use App\Driver;
 
 class PaymentController extends Controller
 {
@@ -35,35 +36,39 @@ class PaymentController extends Controller
         //     ->get();
         $v8s = DB::table('payments')
             ->join('users', 'payments.user_id', '=', 'users.id')
-            ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
+                ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+                ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
             ->leftJoin('contractors', 'invoices.contractor_id', 'contractors.id')
             ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
-            ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model')
+                ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
             ->where('cars.model', '=', 'L/C V8') // Add condition here
             ->get();
         $minibus_hiaces = DB::table('payments')
             ->join('users', 'payments.user_id', '=', 'users.id')
-            ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
+                ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+                ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
             ->leftJoin('contractors', 'invoices.contractor_id', 'contractors.id')
             ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
-            ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model')
+                ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
             ->where('cars.model', '=', 'MINIBUS HIACE') // Add condition here
             ->get();
         $toyota_coasters = DB::table('payments')
             ->join('users', 'payments.user_id', '=', 'users.id')
-            ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
+                ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+                ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
             ->leftJoin('contractors', 'invoices.contractor_id', 'contractors.id')
             ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
-            ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model')
+                ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
             ->where('cars.model', '=', 'TOYOTA COASTER') // Add condition here
             ->get();
 
         $mercedes_benz_vianos = DB::table('payments')
             ->join('users', 'payments.user_id', '=', 'users.id')
-            ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
+                ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+                ->leftJoin('invoices', 'payments.invoiceNumber', 'invoices.invoiceNumber')
             ->leftJoin('contractors', 'invoices.contractor_id', 'contractors.id')
             ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
-            ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model')
+                ->select('users.name as username','payments.*', 'contractors.name', 'cars.plate_number', 'cars.model', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
             ->where('cars.model', '=', 'MERCEDES BENZ VIANO') // Add condition here
             ->get();
        $payments = DB::table('cars')
@@ -74,6 +79,7 @@ class PaymentController extends Controller
         'cars.id', '=', 'latest_payments.car_id'
     )
     ->leftJoin('users', 'latest_payments.user_id', '=', 'users.id')
+    ->leftJoin('drivers', 'latest_payments.driver_id', '=', 'drivers.id')
     ->leftJoin('invoices', 'latest_payments.invoiceNumber', '=', 'invoices.invoiceNumber')
     ->leftJoin('contractors', 'invoices.contractor_id', '=', 'contractors.id')
     ->select(
@@ -82,7 +88,9 @@ class PaymentController extends Controller
         'cars.supplier_id',
         'latest_payments.*', 
         'users.name as username',
-        'contractors.name as contractor_name'
+        'contractors.name as contractor_name',
+        'drivers.name as driver_name',
+        'drivers.phone_number as driver_phone'
     )
     ->get();
     
@@ -93,6 +101,7 @@ class PaymentController extends Controller
     )
     ->leftJoin('suppliers', 'cars.supplier_id', 'suppliers.id')
     ->leftJoin('users', 'all_payments.user_id', '=', 'users.id')
+    ->leftJoin('drivers', 'all_payments.driver_id', '=', 'drivers.id')
     ->leftJoin('invoices', 'all_payments.invoiceNumber', '=', 'invoices.invoiceNumber')
     ->leftJoin('contractors', 'invoices.contractor_id', '=', 'contractors.id')
     ->select(
@@ -102,7 +111,9 @@ class PaymentController extends Controller
         'all_payments.*', 
         'suppliers.name as supplier',
         'users.name as username',
-        'contractors.name as contractor_name'
+        'contractors.name as contractor_name',
+        'drivers.name as driver_name',
+        'drivers.phone_number as driver_phone'
     )
     ->get();
 
@@ -151,11 +162,13 @@ class PaymentController extends Controller
     $institutions = Institution::all();
     $invoices = DB::table('invoice')->distinct()->get();
 
+    $drivers = Driver::all();
     // Return the view with available cars
     return view('payments.create')
         ->with('institutions', $institutions)
         ->with('invoices', $invoices)
-        ->with('cars', $availableCars); // Pass available cars only
+        ->with('cars', $availableCars) // Pass available cars only
+        ->with('drivers', $drivers);
 }
 
 
@@ -180,7 +193,7 @@ class PaymentController extends Controller
             // add your validation rules here
         ]);
     
-        $payment = new payment;
+    $payment = new payment;
         $payment->user_id = Auth()->user()->id;
         $payment->files = implode("|", $images);
         $payment->voucherNo = $request->input('voucherNo');
@@ -197,6 +210,9 @@ class PaymentController extends Controller
         $payment->phone_number = $request->input('phone_number');
         $payment->id_number = $request->input('id_number');
         $payment->caution = $request->input('caution');
+    // new fields
+    $payment->driver_id = $request->input('driver_id');
+    $payment->advance = $request->input('advance');
     
         // Calculate total_price
         $bookingDate = \Carbon\Carbon::parse($payment->booking_date);
@@ -222,7 +238,13 @@ class PaymentController extends Controller
     public function show($id)
     {
         //
-        $payment = Payment::find($id);
+        $payment = DB::table('payments')
+            ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
+            ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+            ->select('payments.*', 'cars.plate_number', 'cars.model', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
+            ->where('payments.id', $id)
+            ->first();
+
         return view('payments.show')->with('payment', $payment);
     }
 
@@ -239,10 +261,12 @@ class PaymentController extends Controller
         $cars = Car::all();
         $institutions = Institution::all();
         $payment = Payment::where('payments.id', $id)
-            ->join('cars', 'payments.car_id', '=', 'cars.id')
-            ->select('payments.*', 'cars.plate_number')
+            ->leftJoin('cars', 'payments.car_id', '=', 'cars.id')
+            ->leftJoin('drivers', 'payments.driver_id', '=', 'drivers.id')
+            ->select('payments.*', 'cars.plate_number', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')
             ->first();
-        return view('payments.edit')->with('payment', $payment)->with('institutions', $institutions)->with('cars', $cars);
+    $drivers = Driver::all();
+    return view('payments.edit')->with('payment', $payment)->with('institutions', $institutions)->with('cars', $cars)->with('drivers', $drivers);
     }
 
     /**
@@ -271,6 +295,9 @@ class PaymentController extends Controller
     $payment->client = $request->input('client');
     $payment->booked_by = $request->input('booked_by');
     $payment->unit_price = $request->input('unit_price');
+    // new fields
+    $payment->driver_id = $request->input('driver_id');
+    $payment->advance = $request->input('advance');
 
     // Save the updated record
     $payment->save();

@@ -32,6 +32,26 @@
                             </datalist>
                         </div>
 
+                      <div class="form-group">
+                            <label for="inputDriver">Driver</label>
+                            <input list="driverList" id="inputDriver" class="form-control" name="driver_id" placeholder="Choose...">
+                            <datalist id="driverList">
+                                @foreach($drivers as $driver)
+                                    <option value="{{$driver->id}}" data-phone="{{$driver->phone_number}}">{{$driver->name}} - {{$driver->phone_number}}</option>
+                                @endforeach
+                            </datalist>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="driver_phone">Driver Phone</label>
+                        <input type="text" class="form-control" id="driver_phone" name="driver_phone" placeholder="Driver phone" readonly>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="advance">Advance</label>
+                        <input type="number" class="form-control" id="advance" placeholder="Advance amount" value="0" name="advance" step="0.01">
+                      </div>
+
 
                   
 
@@ -148,6 +168,22 @@
             });
     });
     </script>
+
+<script type="text/javascript">
+  // populate driver phone when driver selected in datalist
+  document.getElementById('inputDriver').addEventListener('change', function(e){
+    var val = this.value;
+    var list = document.getElementById('driverList').options;
+    var phoneField = document.getElementById('driver_phone');
+    phoneField.value = '';
+    for(var i=0;i<list.length;i++){
+      if(list[i].value == val){
+        phoneField.value = list[i].getAttribute('data-phone') || '';
+        break;
+      }
+    }
+  });
+</script>
 
 
 

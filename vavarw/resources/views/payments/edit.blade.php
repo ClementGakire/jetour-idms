@@ -28,6 +28,26 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="inputDriver">Driver</label>
+                                <select id="driver_select" class="form-control" name="driver_id">
+                                    <option value="">-- None --</option>
+                                    @foreach($drivers as $driver)
+                                        <option value="{{ $driver->id }}" {{ ($payment->driver_id == $driver->id) ? 'selected' : '' }}>{{ $driver->name }} - {{ $driver->phone_number }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="driver_phone">Driver Phone</label>
+                                <input type="text" class="form-control" id="driver_phone" name="driver_phone" value="{{ $payment->driver_phone ?? '' }}" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="advance">Advance</label>
+                                <input type="number" class="form-control" id="advance" placeholder="Advance amount" name="advance" value="{{ $payment->advance ?? 0 }}" step="0.01">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="start_date">Booking Date</label>
                                 <input type="date" name="booking_date" id="start_date" class="form-control" value="{{ $payment->booking_date }}">
                             </div>
@@ -89,6 +109,23 @@
             }
         });
     });
+</script>
+
+<script type="text/javascript">
+    var driverSelect = document.getElementById('driver_select');
+    if(driverSelect){
+        driverSelect.addEventListener('change', function(){
+            var opt = this.options[this.selectedIndex];
+            // option text contains phone, but better to fetch via dataset if available
+            var phone = '';
+            if(opt && opt.text){
+                var parts = opt.text.split(' - ');
+                phone = parts.length > 1 ? parts[1] : '';
+            }
+            var phoneField = document.getElementById('driver_phone');
+            if(phoneField) phoneField.value = phone;
+        });
+    }
 </script>
 
 @endsection

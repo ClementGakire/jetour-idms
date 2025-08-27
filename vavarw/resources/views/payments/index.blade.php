@@ -44,6 +44,9 @@
             <th class="text-center">Unit Price</th>
             <th class="text-center">Total Price</th>
             <th class="text-center">Client</th>
+              <th class="text-center">Driver</th>
+              <th class="text-center">Driver Phone</th>
+              <th class="text-center">Advance</th>
             <th class="text-center">Status</th>
             <th class="text-center">Booked By</th>
             @if(Auth::user()->id == 1)
@@ -102,6 +105,9 @@
                     <td class="text-center">
                         {{ $status !== 'Parking' ? ($payment->client ?? '') : '' }}
                     </td>
+                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
+                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
+                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
                     <td class="text-center {{ $statusClass }}">
                         {{ $status }}
                     </td>
@@ -156,6 +162,9 @@
       <th class="text-center">Unit Price</th>
       <th class="text-center">Total Price</th>
       <th class="text-center">Client</th>
+  <th class="text-center">Driver</th>
+  <th class="text-center">Driver Phone</th>
+  <th class="text-center">Advance</th>
       <th class="text-center">Status</th>
       <th class="text-center">Booked By</th>
       @if(Auth::user()->id == 1)
@@ -197,6 +206,9 @@
         <td class="text-center">{{ number_format($payment->unit_price) }}</td>
         <td class="text-center">{{ number_format($totalPrice) }}</td>
         <td class="text-center">{{ $payment->client }}</td>
+    <td class="text-center">{{ $payment->driver_name ?? '' }}</td>
+    <td class="text-center">{{ $payment->driver_phone ?? '' }}</td>
+    <td class="text-center">{{ $payment->advance ?? '' }}</td>
         <td class="text-center">{{ $status }}</td>
         <td class="text-center">{{ $payment->username }}</td>
         @if(Auth::user()->id == 1)

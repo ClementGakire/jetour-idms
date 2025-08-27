@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/jetourrw/public_html/idms.jetour.rw/
+    - /bin/cp -R * $DEPLOYPATH
