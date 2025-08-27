@@ -107,6 +107,19 @@
                         <input type="text" class="form-control" id="customer" placeholder="Caution Amount" value="" name="caution">
                         
                       </div>
+
+                      <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea class="form-control" name="comments" id="comments" rows="3" placeholder="Comments about the checked car (optional)"></textarea>
+                      </div>
+
+                      <div class="form-group">
+                        <label>Checked Status</label>
+                        <div>
+                          <label class="mr-3"><input type="radio" name="checked_status" value="yes"> Yes</label>
+                          <label><input type="radio" name="checked_status" value="no" checked> No</label>
+                        </div>
+                      </div>
                      
                       <!--<div class="form-group">-->
                       <!--  <label for="title">Status</label>-->

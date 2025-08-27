@@ -86,6 +86,19 @@
                                 <input type="text" class="form-control" id="customer" placeholder="Caution Amount" name="caution" value="{{ $payment->caution ?? '' }}">
                             </div>
 
+                                                        <div class="form-group">
+                                                                <label for="comments">Comments</label>
+                                                                <textarea class="form-control" name="comments" id="comments" rows="3">{{ $payment->comments ?? '' }}</textarea>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                                <label>Checked Status</label>
+                                                                <div>
+                                                                    <label class="mr-3"><input type="radio" name="checked_status" value="yes" {{ (isset($payment->checked_status) && $payment->checked_status === 'yes') ? 'checked' : '' }}> Yes</label>
+                                                                    <label><input type="radio" name="checked_status" value="no" {{ (!isset($payment->checked_status) || $payment->checked_status === 'no') ? 'checked' : '' }}> No</label>
+                                                                </div>
+                                                        </div>
+
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
 

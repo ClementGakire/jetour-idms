@@ -163,17 +163,19 @@
                     </td>
                     @if(Auth::user()->id == 1)
                         <td class="text-center">
-                            @if($payment->booking_date)
-                                <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}">
+                <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}">
                                     {{ csrf_field() }}
                                     <input type="hidden" name="_method" value="delete">
                                     <button type="button" class="btn btn-danger delete-button" data-id="{{ $payment->id }}">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
-                                <a href="/payments/{{ $payment->id }}/edit">
-                                    <i class="fas fa-edit text-success"></i>
-                                </a>
+                <a href="/payments/{{ $payment->id }}" title="View" class="btn btn-sm btn-info">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="/payments/{{ $payment->id }}/edit">
+                  <i class="fas fa-edit text-success"></i>
+                </a>
                             @endif
                         </td>
                     @endif

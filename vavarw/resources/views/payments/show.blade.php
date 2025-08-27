@@ -21,6 +21,21 @@
       <p><strong>Driver:</strong> {{ $payment->driver_name ?? '' }}</p>
       <p><strong>Driver Phone:</strong> {{ $payment->driver_phone ?? '' }}</p>
       <p><strong>Advance:</strong> {{ $payment->advance ?? '' }}</p>
+                  <p><strong>Checked Status:</strong> {{ ucfirst($payment->checked_status ?? 'no') }}</p>
+                  <p><strong>Comments:</strong> {{ $payment->comments ?? '' }}</p>
+                  <div>
+                        <h5>Uploaded Files</h5>
+                        @if(!empty($payment->files))
+                              @php $files = explode('|', $payment->files); @endphp
+                              <ul>
+                                    @foreach($files as $f)
+                                          <li><a href="/{{ trim($f) }}" target="_blank">{{ trim($f) }}</a></li>
+                                    @endforeach
+                              </ul>
+                        @else
+                              <p>No files uploaded.</p>
+                        @endif
+                  </div>
 </div>
 @endif
 @endsection

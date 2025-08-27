@@ -210,6 +210,8 @@ class PaymentController extends Controller
         $payment->phone_number = $request->input('phone_number');
         $payment->id_number = $request->input('id_number');
         $payment->caution = $request->input('caution');
+    $payment->comments = $request->input('comments');
+    $payment->checked_status = $request->input('checked_status') ?? 'no';
     // new fields
     $payment->driver_id = $request->input('driver_id');
     $payment->advance = $request->input('advance');
@@ -298,6 +300,9 @@ class PaymentController extends Controller
     // new fields
     $payment->driver_id = $request->input('driver_id');
     $payment->advance = $request->input('advance');
+    // comments and checked status
+    $payment->comments = $request->input('comments');
+    $payment->checked_status = $request->input('checked_status') ?? 'no';
 
     // Save the updated record
     $payment->save();

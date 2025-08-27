@@ -10,7 +10,7 @@ class Payment extends Model
     protected $fillable = [
         'user_id', 'files', 'voucherNo', 'institution', 'invoiceNumber', 'payment_date', 'amounts',
         'car_id', 'booking_date', 'return_date', 'client', 'booked_by', 'unit_price', 'phone_number',
-        'id_number', 'caution', 'total_price', 'driver_id', 'advance'
+    'id_number', 'caution', 'total_price', 'driver_id', 'advance', 'comments', 'checked_status'
     ];
 
     /**
