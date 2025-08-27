@@ -372,18 +372,33 @@ $(document).ready(function() {
       function parseDateStr(s) {
         s = (s || '').toString().trim();
         if (!s) return null;
-        // Try formats like dd-mm-yyyy or dd-mm-yy or dd/mm/yyyy
+        // Try splitting common separators
         var parts = s.split(/[-\/\.]/);
         if (parts.length === 3) {
+          // Detect ISO / Y-M-D (e.g., 2025-08-26) where first part is 4 digits
+          if (parts[0].length === 4) {
+            var y = parseInt(parts[0], 10);
+            var m = parseInt(parts[1], 10) - 1;
+            var d = parseInt(parts[2], 10);
+            var dt = new Date(y, m, d);
+            dt.setHours(0,0,0,0);
+            return dt;
+          }
+          // Otherwise assume D-M-Y or D-M-YY
           var d = parseInt(parts[0], 10);
           var m = parseInt(parts[1], 10) - 1;
           var y = parseInt(parts[2], 10);
           if (y < 100) y += 2000;
-          return new Date(y, m, d);
+          var dt2 = new Date(y, m, d);
+          dt2.setHours(0,0,0,0);
+          return dt2;
         }
-        // Fallback to native parse
+        // Fallback: try native parse (ISO timestamps), then normalize
         var t = Date.parse(s);
-        return isNaN(t) ? null : new Date(t);
+        if (isNaN(t)) return null;
+        var dtf = new Date(t);
+        dtf.setHours(0,0,0,0);
+        return dtf;
       }
 
       var bookingDate = parseDateStr(bookingDateStr);
