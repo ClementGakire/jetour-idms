@@ -27,6 +27,14 @@
   .badge-completed { background:#6c757d; color:#fff; }
   .badge-parking { background:#343a40; color:#fff; }
 
+  /* Checked status badges */
+  .badge-checked-yes { background:#28a745; color:#fff; }
+  .badge-checked-no { background:#6c757d; color:#fff; }
+
+  /* Action buttons */
+  .action-buttons { display:flex; gap:6px; justify-content:center; }
+  .action-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; padding:0; border-radius:6px; }
+
   /* Unpaid summary */
   .unpaid-summary { background: #f8f9fb; border-top:1px solid #e9eef3; margin-top:6px; padding:10px 16px; border-radius:4px; }
 
@@ -71,6 +79,7 @@
               <th class="text-center">Driver Phone</th>
                 <th class="text-center">Advance</th>
                 <th class="text-center">Caution</th>
+                <th class="text-center">Checked</th>
             <th class="text-center">Status</th>
             <th class="text-center">Booked By</th>
             @if(Auth::user()->id == 1)
@@ -155,28 +164,34 @@
                     <td class="text-center">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
                     @php $caution = $payment->caution ?? $payment->caution_amount ?? null; @endphp
                     <td class="text-center">{{ $status !== 'Parking' && $caution ? number_format($caution) : '' }}</td>
-          <td class="text-center">
+                    <td class="text-center">
             <span class="badge {{ $badgeClass }}">{{ $status }}</span>
           </td>
+                    <td class="text-center">
+                      @php $checked = $payment->checked_status ?? 'no'; @endphp
+                      @if(strtolower($checked) === 'yes')
+                        <span class="badge badge-checked-yes">Yes</span>
+                      @else
+                        <span class="badge badge-checked-no">No</span>
+                      @endif
+                    </td>
                     <td class="text-center">
                         {{ $status !== 'Parking' ? ($payment->username ?? '') : '' }}
                     </td>
                     @if(Auth::user()->id == 1)
                         <td class="text-center">
-                <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}">
-                                    {{ csrf_field() }}
-                                    <input type="hidden" name="_method" value="delete">
-                                    <button type="button" class="btn btn-danger delete-button" data-id="{{ $payment->id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                <a href="/payments/{{ $payment->id }}" title="View" class="btn btn-sm btn-info">
-                  <i class="fas fa-eye"></i>
-                </a>
-                <a href="/payments/{{ $payment->id }}/edit">
-                  <i class="fas fa-edit text-success"></i>
-                </a>
-            </td>
+                          <div class="action-buttons">
+                            <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}" style="margin:0;">
+                              {{ csrf_field() }}
+                              <input type="hidden" name="_method" value="delete">
+                              <button type="button" class="btn btn-danger action-btn delete-button" data-id="{{ $payment->id }}" title="Delete">
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </form>
+                            <a href="/payments/{{ $payment->id }}" class="btn btn-info action-btn" title="View"><i class="fas fa-eye"></i></a>
+                            <a href="/payments/{{ $payment->id }}/edit" class="btn btn-light action-btn" title="Edit"><i class="fas fa-edit text-success"></i></a>
+                          </div>
+                        </td>
           @endif
                 </tr>
             @endif
@@ -216,7 +231,8 @@
   <th class="text-center">Driver Phone</th>
   <th class="text-center">Advance</th>
   <th class="text-center">Caution</th>
-      <th class="text-center">Status</th>
+  <th class="text-center">Checked</th>
+  <th class="text-center">Status</th>
       <th class="text-center">Booked By</th>
       @if(Auth::user()->id == 1)
         <th class="text-center">Action</th>
@@ -261,6 +277,14 @@
     <td class="text-center">{{ $payment->driver_phone ?? '' }}</td>
   <td class="text-center">{{ $payment->advance ?? '' }}</td>
   <td class="text-center">{{ $payment->caution ?? $payment->caution_amount ?? '' }}</td>
+        <td class="text-center">
+          @php $checked = $payment->checked_status ?? 'no'; @endphp
+          @if(strtolower($checked) === 'yes')
+            <span class="badge badge-checked-yes">Yes</span>
+          @else
+            <span class="badge badge-checked-no">No</span>
+          @endif
+        </td>
         <td class="text-center">{{ $status }}</td>
         <td class="text-center">{{ $payment->username }}</td>
         @if(Auth::user()->id == 1)
