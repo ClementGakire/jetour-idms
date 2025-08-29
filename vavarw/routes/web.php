@@ -10,6 +10,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('invoices', 'InvoiceController');
 
 Route::resource('payments', 'PaymentController');
+// Booking history page (uses PaymentController@bookingHistory)
+Route::get('/booking-history', 'PaymentController@bookingHistory')->name('booking.history');
 
 Route::get('po/export', 'RoadmapController@export');
 

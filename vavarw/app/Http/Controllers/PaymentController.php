@@ -251,6 +251,41 @@ class PaymentController extends Controller
     }
 
     /**
+     * Display booking history page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bookingHistory()
+    {
+        // Reuse the bookings query used in index to provide full history
+        $bookings = DB::table('cars')
+            ->leftJoin(
+                DB::raw('(SELECT * FROM payments) as all_payments'),
+                'cars.id', '=', 'all_payments.car_id'
+            )
+            ->leftJoin('suppliers', 'cars.supplier_id', 'suppliers.id')
+            ->leftJoin('users', 'all_payments.user_id', '=', 'users.id')
+            ->leftJoin('drivers', 'all_payments.driver_id', '=', 'drivers.id')
+            ->leftJoin('invoices', 'all_payments.invoiceNumber', '=', 'invoices.invoiceNumber')
+            ->leftJoin('contractors', 'invoices.contractor_id', 'contractors.id')
+            ->select(
+                'cars.plate_number', 
+                'cars.model', 
+                'cars.supplier_id', 
+                'all_payments.*', 
+                'suppliers.name as supplier',
+                'users.name as username',
+                'contractors.name as contractor_name',
+                'drivers.name as driver_name',
+                'drivers.phone_number as driver_phone'
+            )
+            ->orderBy('all_payments.booking_date', 'desc')
+            ->get();
+
+        return view('payments.history')->with('bookings', $bookings);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Payment  $payment
@@ -308,7 +343,7 @@ class PaymentController extends Controller
     $payment->save();
 
     // Redirect back to payments with a success message
-    return redirect('/payments')->with('success', 'Payment edited successfully');
+    return redirect('/payments')->with('success', 'Booking edited successfully');
 }
 
 
@@ -323,6 +358,6 @@ class PaymentController extends Controller
         //
         $payment = Payment::find($id);
         $payment->delete();
-        return redirect('/payments')->with('success','payment deleted');
+        return redirect('/payments')->with('success','Booking deleted');
     }
 }
