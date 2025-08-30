@@ -58,9 +58,28 @@
                   
                 </div>
                 <div class="col-md-3">
+                  @php
+                    use Carbon\Carbon;
+                    $tomorrow = Carbon::tomorrow()->toDateString();
+                    $endingBookings = \DB::table('payments')
+                        ->leftJoin('cars','payments.car_id','cars.id')
+                        ->leftJoin('users','payments.user_id','users.id')
+                        ->select('payments.id','payments.return_date','cars.plate_number','cars.model','users.name as username')
+                        ->whereDate('payments.return_date', $tomorrow)
+                        ->get();
+                    $endingCount = $endingBookings->count();
+                  @endphp
+
                   <ul class="navbar-nav">
                     <li class="nav-item icon-parent"><a href="#" class="nav-link icon-bullet"><i class="fas fa-comments text-muted fa-lg"></i></a></li>
-                    <li class="nav-item icon-parent"><a href="#" class="nav-link icon-bullet"><i class="fas fa-bell text-muted fa-lg"></i></a></li>
+                    <li class="nav-item icon-parent">
+                      <a href="#" class="nav-link icon-bullet" data-toggle="modal" data-target="#endingModal" title="Bookings ending tomorrow">
+                        <i class="fas fa-bell text-muted fa-lg"></i>
+                        @if($endingCount > 0)
+                          <span class="badge badge-danger" style="position:relative; top:-10px; left:-6px;">{{ $endingCount }}</span>
+                        @endif
+                      </a>
+                    </li>
                     <li class="nav-item ml-md-auto"><a href="{{ url('/logout') }}" onclick="event.preventDefault();
                                  document.getElementById('logout-form').submit();" class="nav-link"><i class="fas fa-sign-out-alt text-danger fa-lg"></i></a><form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                         {{ csrf_field() }}
@@ -73,4 +92,47 @@
           </div>
         </div>
       </div>
+
     </nav>
+
+    <!-- Modal: Bookings ending tomorrow -->
+    <div class="modal fade" id="endingModal" tabindex="-1" role="dialog" aria-labelledby="endingModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="endingModalLabel">Bookings ending tomorrow</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            @if($endingCount > 0)
+              <p>There are {{ $endingCount }} booking(s) ending tomorrow ({{ \Carbon\Carbon::tomorrow()->toDateString() }}):</p>
+              <div class="list-group">
+                @foreach($endingBookings as $b)
+                  <a href="/payments/{{ $b->id }}" class="list-group-item list-group-item-action">
+                    <strong>{{ $b->plate_number ?? 'N/A' }} - {{ $b->model ?? '' }}</strong>
+                    <div class="small text-muted">Booking ID: {{ $b->id }} — Return date: {{ $b->return_date }} — Booked by: {{ $b->username ?? 'Unknown' }}</div>
+                  </a>
+                @endforeach
+              </div>
+            @else
+              <p>No bookings ending tomorrow.</p>
+            @endif
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="/payments" class="btn btn-primary">View all bookings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if($endingCount > 0)
+    <script>
+      document.addEventListener('DOMContentLoaded', function(){
+        // show modal automatically when there are alerts
+        try { $('#endingModal').modal('show'); } catch(e) { /* jQuery not available */ }
+      });
+    </script>
+    @endif
