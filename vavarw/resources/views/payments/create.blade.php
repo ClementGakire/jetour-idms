@@ -82,9 +82,15 @@
                       </div>
                      
                       <div class="form-group">
-                        <label for="institution">Client</label>
-                        <input type="text" class="form-control" id="customer" placeholder="Enter Client" value="" name="client" required>
-                        
+                        <label for="inputClient">Client</label>
+                        <input list="institutionList" id="inputClient" class="form-control" name="client" required placeholder="Choose client...">
+                        <datalist id="institutionList">
+                            @foreach($institutions as $institution)
+                                <option value="{{ $institution->name }}" data-id="{{ $institution->id }}">{{ $institution->name }}</option>
+                            @endforeach
+                        </datalist>
+                        <!-- hidden field to optionally capture the selected institution id -->
+                        <input type="hidden" name="institution_id" id="institution_id" value="">
                       </div>
                      
                      <div class="form-group">
@@ -196,6 +202,27 @@
       }
     }
   });
+</script>
+
+<script type="text/javascript">
+  // populate hidden institution_id when client name picked from datalist
+  (function(){
+    var clientInput = document.getElementById('inputClient');
+    var dataList = document.getElementById('institutionList');
+    var hidden = document.getElementById('institution_id');
+    if(!clientInput || !dataList || !hidden) return;
+    clientInput.addEventListener('change', function(){
+      var val = this.value;
+      hidden.value = '';
+      var opts = dataList.options;
+      for(var i=0;i<opts.length;i++){
+        if(opts[i].value === val){
+          hidden.value = opts[i].getAttribute('data-id') || '';
+          break;
+        }
+      }
+    });
+  })();
 </script>
 
 
