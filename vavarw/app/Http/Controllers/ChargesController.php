@@ -39,6 +39,7 @@ class ChargesController extends Controller
             ->select('charges.*', 'cars.plate_number', 'expenses.name', 'roadmaps.purchase_order', 'drivers.name as driver', 'suppliers.name as supplier_name')
             ->get();
         //$charges = Charge::all();
+        dd($charges);
         return view('charges.index')->with('charges', $charges);
         //return view('projects.index')->with('projects', $projects);
     }
