@@ -39,11 +39,11 @@
                 <th>Supplier</th>
                 <th>Expense Type</th>
                 <th>Driver</th>
-                <th>Supplier</th>
                 <th>Date</th>
                 <th>Amount</th>
                 <th>Payment Mode</th>
                 @if(Auth::user()->id == 1)
+
                 <th>action</th>
                 @endif
             </tr>
