@@ -44,7 +44,6 @@
                 <th>Amount</th>
                 <th>Payment Mode</th>
                 @if(Auth::user()->id == 1)
-                <th>Payment Mode</th>
                 <th>action</th>
                 @endif
             </tr>
@@ -57,14 +56,12 @@
         		
         		<td>{{ $charge->roadmap }}</td>
                 <td>{{ $charge->plate_number }}</td>
-                    <td>{{ $charge->supplier_name ?? '' }}</td>
                 <td>{{ $charge->supplier_name ?? '' }}</td>
                 <td>{{ $charge->name }}</td>
                 <td>{{ $charge->driver }}</td>
                 <td>{{ $charge->date }}</td>
         	    <td>{{ $charge->amount }}</td>
                 <td>{{ $charge->payment_mode }}</td>
-                    <td>{{ $charge->payment_mode }}</td>
         		@if(Auth::user()->id == 1)
         		<td class="text-left pl-4"><a href="/charges/{{$charge->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('ChargesController@destroy', [$charge->id]) }}" method="POST">
                                  {{ csrf_field() }}
