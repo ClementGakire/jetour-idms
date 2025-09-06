@@ -27,7 +27,7 @@
                         </datalist>
 
                       </div>
-                      <div class="form-group">
+                      <!-- <div class="form-group">
                         <label for="title">Purchase Order Number</label>
                         <input type="" name="roadmap" list="roadmaps" class="form-control" placeholder="Search Purchase Order Number" id="txts">
                         <datalist id="roadmaps">  
@@ -37,7 +37,7 @@
                           @endforeach
                         </datalist>
 
-                      </div>
+                      </div> -->
                       <div class="form-group">
                         <label for="title">Date</label>
                         <input type="date" class="form-control" id="title" placeholder="Date" name="date">
@@ -69,6 +69,24 @@
                         <input type="text" class="form-control" id="title" placeholder="Amount" name="amount" required>
                       </div>
                       <div class="form-group">
+                        <label for="">Payment Mode</label>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="MoMo" id="pm-momo">
+                          <label class="form-check-label" for="pm-momo">MoMo</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Bank Transfer" id="pm-bank">
+                          <label class="form-check-label" for="pm-bank">Bank Transfer</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Cash" id="pm-cash">
+                          <label class="form-check-label" for="pm-cash">Cash</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Check" id="pm-check">
+                          <label class="form-check-label" for="pm-check">Check</label>
+                        </div>
+
                         <label for="">Files</label>
                         <input type="file" name="files[]" id="" class="form-control" multiple>
                       </div>

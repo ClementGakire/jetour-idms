@@ -76,6 +76,8 @@ class ChargesController extends Controller
         
          $this->validate($request, [
              'files' => 'nullable|max:1999',
+             'payment_mode' => 'nullable|array',
+             'payment_mode.*' => 'in:MoMo,Bank Transfer,Cash,Check',
          ]);
         $charge = new charge;
         $charge->car_id = $request->input('car_id');
@@ -85,6 +87,7 @@ class ChargesController extends Controller
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount');
         $charge->date = $request->input('date');
+    $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();
         return redirect('/charges')->with('success','charge saved');
     }
@@ -129,6 +132,11 @@ class ChargesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request, [
+            'payment_mode' => 'nullable|array',
+            'payment_mode.*' => 'in:MoMo,Bank Transfer,Cash,Check',
+        ]);
+
         $charge =  Charge::find($id);
         $charge->car_id = $request->input('car_id');
         $charge->expense_id = $request->input('expense_id');
@@ -136,6 +144,7 @@ class ChargesController extends Controller
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount'); 
         $charge->date = $request->input('date');
+        $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();
         return redirect('/charges')->with('success','charge edited');
     }

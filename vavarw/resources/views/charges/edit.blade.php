@@ -67,6 +67,26 @@
                         <label for="title">Amount</label>
                         <input type="text" class="form-control" id="title" placeholder="Amount" name="amount" value="{{ $charge->amount }}">
                       </div>
+                      <div class="form-group">
+                        <label for="">Payment Mode</label>
+                        @php $modes = $charge->payment_mode ? explode(',', $charge->payment_mode) : []; @endphp
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="MoMo" id="pm-momo" {{ in_array('MoMo', $modes) ? 'checked' : '' }}>
+                          <label class="form-check-label" for="pm-momo">MoMo</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Bank Transfer" id="pm-bank" {{ in_array('Bank Transfer', $modes) ? 'checked' : '' }}>
+                          <label class="form-check-label" for="pm-bank">Bank Transfer</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Cash" id="pm-cash" {{ in_array('Cash', $modes) ? 'checked' : '' }}>
+                          <label class="form-check-label" for="pm-cash">Cash</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" name="payment_mode[]" value="Check" id="pm-check" {{ in_array('Check', $modes) ? 'checked' : '' }}>
+                          <label class="form-check-label" for="pm-check">Check</label>
+                        </div>
+                      </div>
                       <button type="submit" class="btn btn-primary">Submit</button>                 
                </form>
     
