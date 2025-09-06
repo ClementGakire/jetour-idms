@@ -7,6 +7,7 @@ use App\Car;
 use App\Expense;
 use App\Roadmap;
 use App\Driver;
+use App\Supplier;
 use Illuminate\Http\Request;
 use DB;
 
@@ -33,8 +34,9 @@ class ChargesController extends Controller
             ->leftJoin('drivers', 'charges.driver_id', 'drivers.id')
             ->leftJoin('roadmaps', 'charges.roadmap', 'roadmaps.id')
             ->leftJoin('cars', 'charges.car_id', 'cars.id')
+            ->leftJoin('suppliers', 'cars.supplier_id', 'suppliers.id')
             ->leftJoin('expenses', 'charges.expense_id', 'expenses.id')
-            ->select('charges.*', 'cars.plate_number', 'expenses.name', 'roadmaps.purchase_order', 'drivers.name as driver')
+            ->select('charges.*', 'cars.plate_number', 'expenses.name', 'roadmaps.purchase_order', 'drivers.name as driver', 'suppliers.name as supplier_name')
             ->get();
         //$charges = Charge::all();
         return view('charges.index')->with('charges', $charges);
@@ -53,7 +55,8 @@ class ChargesController extends Controller
         $roadmaps = Roadmap::all();
         $cars = Car::all();
         $expenses = Expense::all();
-        return view('charges.create')->with('cars', $cars)->with('expenses', $expenses)->with('roadmaps', $roadmaps)->with('drivers', $drivers);
+    $suppliers = Supplier::all();
+    return view('charges.create')->with('cars', $cars)->with('expenses', $expenses)->with('roadmaps', $roadmaps)->with('drivers', $drivers)->with('suppliers', $suppliers);
     }
 
     /**
@@ -87,6 +90,9 @@ class ChargesController extends Controller
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount');
         $charge->date = $request->input('date');
+    // Derive supplier from the selected car's supplier_id (cars table)
+    $car = Car::find($request->input('car_id'));
+    $charge->supplier = $car ? $car->supplier_id : null;
     $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();
         return redirect('/charges')->with('success','charge saved');
@@ -144,6 +150,9 @@ class ChargesController extends Controller
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount'); 
         $charge->date = $request->input('date');
+    // Derive supplier from the selected car's supplier_id on update as well
+    $car = Car::find($request->input('car_id'));
+    $charge->supplier = $car ? $car->supplier_id : null;
         $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();
         return redirect('/charges')->with('success','charge edited');

@@ -36,11 +36,15 @@
             <tr>
                 <th>P.O Number</th>
                 <th>Car</th>
+                <th>Supplier</th>
                 <th>Expense Type</th>
                 <th>Driver</th>
+                <th>Supplier</th>
                 <th>Date</th>
                 <th>Amount</th>
+                <th>Payment Mode</th>
                 @if(Auth::user()->id == 1)
+                <th>Payment Mode</th>
                 <th>action</th>
                 @endif
             </tr>
@@ -53,10 +57,14 @@
         		
         		<td>{{ $charge->roadmap }}</td>
                 <td>{{ $charge->plate_number }}</td>
+                    <td>{{ $charge->supplier_name ?? '' }}</td>
+                <td>{{ $charge->supplier_name ?? '' }}</td>
                 <td>{{ $charge->name }}</td>
                 <td>{{ $charge->driver }}</td>
                 <td>{{ $charge->date }}</td>
         	    <td>{{ $charge->amount }}</td>
+                <td>{{ $charge->payment_mode }}</td>
+                    <td>{{ $charge->payment_mode }}</td>
         		@if(Auth::user()->id == 1)
         		<td class="text-left pl-4"><a href="/charges/{{$charge->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('ChargesController@destroy', [$charge->id]) }}" method="POST">
                                  {{ csrf_field() }}
@@ -111,11 +119,12 @@
     <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
     <script>
         $(document).ready(function(){
-          $.fn.dataTable.ext.search.push(
+              $.fn.dataTable.ext.search.push(
           function (settings, data, dataIndex) {
               var min = $('.min').datepicker("getDate");
               var max = $('#max').datepicker("getDate");
-              var startDate = new Date(data[4]);
+              // columns: 0 P.O,1 Car,2 Supplier,3 Expense,4 Driver,5 Date,6 Amount,7 Payment Mode
+              var startDate = new Date(data[5]);
               if (min == null && max == null) { return true; }
               if (min == null && startDate <= max) { return true;}
               if(max == null && startDate >= min) {return true;}
@@ -213,7 +222,7 @@
 
         
         total = api
-            .column( 5 )
+            .column( 6 )
             .data()
             .reduce( function (a, b) {
                 return (intVal(a) + intVal(b)).toFixed(2);
@@ -221,14 +230,14 @@
 
         
         pageTotal = api
-            .column( 5, { page: 'current'} )
+            .column( 6, { page: 'current'} )
             .data()
             .reduce( function (a, b) {
                 return (intVal(a) + intVal(b)).toFixed(2);
             }, 0 );
 
         
-        $( api.column( 5 ).footer() ).html(
+    $( api.column( 6 ).footer() ).html(
             pageTotal
         );
     }

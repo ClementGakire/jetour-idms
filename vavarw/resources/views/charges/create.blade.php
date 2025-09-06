@@ -64,6 +64,7 @@
                         </datalist>
 
                       </div>
+                      <!-- supplier is derived from the selected car (cars.supplier_id) so no supplier input here -->
                       <div class="form-group">
                         <label for="title">Amount</label>
                         <input type="text" class="form-control" id="title" placeholder="Amount" name="amount" required>

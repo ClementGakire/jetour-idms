@@ -64,6 +64,16 @@
 
                       </div>
                       <div class="form-group">
+                        <label for="title">Supplier</label>
+                        <input type="" name="supplier" list="suppliers" class="form-control" placeholder="Search Supplier" id="txts" value="{{ $charge->supplier }}">
+                        <datalist id="suppliers">
+                          @foreach($suppliers as $supplier)
+                          <option value="{{$supplier->id}}">{{$supplier->name}}</option>
+                          @endforeach
+                        </datalist>
+
+                      </div>
+                      <div class="form-group">
                         <label for="title">Amount</label>
                         <input type="text" class="form-control" id="title" placeholder="Amount" name="amount" value="{{ $charge->amount }}">
                       </div>
