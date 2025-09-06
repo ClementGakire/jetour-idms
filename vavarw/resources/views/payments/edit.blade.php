@@ -62,8 +62,14 @@
                                 
                               </div>
                             <div class="form-group">
-                                <label for="institution">Client</label>
-                                <input type="text" class="form-control" id="customer" placeholder="Enter Client" name="client" value="{{ $payment->client }}">
+                                <label for="inputClient">Client</label>
+                                <input list="institutionList" id="inputClient" class="form-control" name="client" value="{{ $payment->client }}" placeholder="Choose client...">
+                                <datalist id="institutionList">
+                                    @foreach($institutions as $institution)
+                                        <option value="{{ $institution->name }}" data-id="{{ $institution->id }}">{{ $institution->name }}</option>
+                                    @endforeach
+                                </datalist>
+                                <input type="hidden" name="institution_id" id="institution_id" value="{{ $payment->institution_id ?? '' }}">
                             </div>
 
                             <div class="form-group">
@@ -154,6 +160,36 @@
             if(phoneField) phoneField.value = phone;
         });
     }
+</script>
+
+<script type="text/javascript">
+    // populate hidden institution_id when client name picked from datalist (edit form)
+    (function(){
+        var clientInput = document.getElementById('inputClient');
+        var dataList = document.getElementById('institutionList');
+        var hidden = document.getElementById('institution_id');
+        if(!clientInput || !dataList || !hidden) return;
+
+        function setHiddenFromValue(val){
+            hidden.value = '';
+            var opts = dataList.options;
+            for(var i=0;i<opts.length;i++){
+                if(opts[i].value === val){
+                    hidden.value = opts[i].getAttribute('data-id') || '';
+                    break;
+                }
+            }
+        }
+
+        clientInput.addEventListener('change', function(){
+            setHiddenFromValue(this.value);
+        });
+
+        // initialize on load if the input has a value
+        if(clientInput.value){
+            setHiddenFromValue(clientInput.value);
+        }
+    })();
 </script>
 
 @endsection
