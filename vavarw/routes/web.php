@@ -25,6 +25,8 @@ Route::resource('contractors', 'ContractorController');
 
 Route::resource('cars', 'CarsController');
 
+Route::resource('contracts', 'ContractsController');
+
 Route::resource('charges', 'ChargesController');
 
 // Route::post('charges/{{$charge->id}}', 'ChargesController@update');
