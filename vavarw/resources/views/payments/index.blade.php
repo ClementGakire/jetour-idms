@@ -448,13 +448,13 @@ function confirmDelete(id) {
       '<style>@page{size:A4;margin:18mm}body{font-family:Helvetica,Arial,sans-serif;padding:18px;color:#222}.print-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-weight:700;font-size:18px}.company-info{text-align:right;font-size:12px;color:#333}.label{font-weight:700;display:inline-block;min-width:160px}.row{margin-bottom:8px;font-size:13px}.section-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.section-table th,.section-table td{padding:10px;border:1px solid #ddd;vertical-align:top}.section-title{background:#f5f5f5;font-weight:700}.totals{margin-top:20px;font-size:14px;display:flex;gap:20px}.totals .box{padding:12px 16px;border:1px solid #e0e0e0;background:#fafafa;border-radius:6px}.totals .amount{font-weight:700;font-size:1.1em;color:#111}.status-badge{display:inline-block;padding:8px 12px;background:#2e7d32;color:#fff;border-radius:4px;font-weight:700;margin-top:12px}.watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:8rem;color:rgba(0,0,0,0.04);pointer-events:none;z-index:9999}</style>' +
       '</head><body><div class="watermark">APPROVED</div>' +
       '<div class="print-header"><div class="logo">JET TOURS COMPANY LIMITED</div><div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div></div>' +
-      '<h3 style="text-align:center">Reception / Approved Report</h3>' +
+      '<h3 style="text-align:center">Invoice</h3>' +
       '<table class="section-table"><tr class="section-title"><th>Supplier</th><th>Operation</th></tr>' +
       '<tr><td><div class="row"><span class="label">Supplier:</span> ' + (client || '') + '</div><div class="row"><span class="label">Phone:</span> ' + (phone || '') + '</div></td>' +
       '<td><div class="row"><span class="label">Model:</span> ' + (model || '') + '</div>' +
       '<div class="row"><span class="label">Plate:</span> ' + (plate || '') + '</div>' +
       '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
-      '<div class="row"><span class="label">Starting Date:</span> ' + (bookingDate || '') + ' <strong style="margin-left:12px">Ending Date:</strong> ' + (returnDate || '') + '</div>' +
+      '<div class="row"><span class="label">From:</span> ' + (bookingDate || '') + ' <strong style="margin-left:12px">To:</strong> ' + (returnDate || '') + '</div>' +
       '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
       '<div class="totals"><div class="box"><div class="label">Total Purchase Price</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
       '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
