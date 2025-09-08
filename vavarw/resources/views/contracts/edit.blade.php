@@ -45,10 +45,20 @@
 							</div>
 
 							<div class="form-group">
-								<label for="file">File (PDF or image)</label>
-								<input type="file" name="file" class="form-control">
+								<label for="files">Files (PDFs or images) - you can add more</label>
+								<input type="file" name="files[]" class="form-control" multiple>
 								@if(!empty($contract->file))
-									<p>Current: <a href="/images/{{ $contract->file }}" target="_blank">Download</a></p>
+									@php $files = explode('|', $contract->file); @endphp
+									<p>Current:</p>
+									<ul>
+									@foreach($files as $f)
+										<li><a href="/images/{{ $f }}" target="_blank">{{ $f }}</a></li>
+									@endforeach
+									</ul>
+									<div class="form-check">
+									  <input type="checkbox" name="remove_existing_files" value="1" class="form-check-input" id="removeExisting">
+									  <label class="form-check-label" for="removeExisting">Remove existing files when saving</label>
+									</div>
 								@endif
 							</div>
 

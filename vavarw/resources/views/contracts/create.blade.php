@@ -44,8 +44,8 @@
               </div>
 
               <div class="form-group">
-                <label for="file">File (PDF or image)</label>
-                <input type="file" name="file" class="form-control">
+                <label for="files">Files (PDFs or images) - you can select multiple</label>
+                <input type="file" name="files[]" class="form-control" multiple>
               </div>
 
               <button class="btn btn-primary" type="submit">Create</button>

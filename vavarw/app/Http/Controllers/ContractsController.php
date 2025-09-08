@@ -36,21 +36,25 @@ class ContractsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'file' => 'nullable|file|max:2048',
+            'files' => 'nullable',
+            'files.*' => 'file|max:2048',
             'client_id' => 'nullable|exists:institutions,id',
             'car_id' => 'nullable|exists:cars,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
         ]);
 
-        $fileName = null;
-        if ($file = $request->file('file')) {
-            $fileName = time()."_".$file->getClientOriginalName();
-            $file->move('images', $fileName);
+        $images = [];
+        if ($files = $request->file('files')) {
+            foreach ($files as $file) {
+                $name = time().'_'.$file->getClientOriginalName();
+                $file->move('images', $name);
+                $images[] = $name;
+            }
         }
 
-        $contract = new Contract;
-        $contract->file = $fileName;
+    $contract = new Contract;
+    $contract->file = !empty($images) ? implode("|", $images) : null;
         $contract->client_id = $request->input('client_id');
         $contract->car_id = $request->input('car_id');
         $contract->start_date = $request->input('start_date');
@@ -77,7 +81,8 @@ class ContractsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'file' => 'nullable|file|max:2048',
+            'files' => 'nullable',
+            'files.*' => 'file|max:2048',
             'client_id' => 'nullable|exists:institutions,id',
             'car_id' => 'nullable|exists:cars,id',
             'start_date' => 'nullable|date',
@@ -86,11 +91,16 @@ class ContractsController extends Controller
 
         $contract = Contract::find($id);
 
-        if ($file = $request->file('file')) {
-            $fileName = time()."_".$file->getClientOriginalName();
-            $file->move('images', $fileName);
-            $contract->file = $fileName;
+        // preserve existing files and append any newly uploaded files
+        $existing = $contract->file ? explode('|', $contract->file) : [];
+        if ($files = $request->file('files')) {
+            foreach ($files as $file) {
+                $name = time().'_'.$file->getClientOriginalName();
+                $file->move('images', $name);
+                $existing[] = $name;
+            }
         }
+        $contract->file = !empty($existing) ? implode('|', $existing) : null;
 
         $contract->client_id = $request->input('client_id');
         $contract->car_id = $request->input('car_id');
@@ -105,6 +115,16 @@ class ContractsController extends Controller
     {
         $contract = Contract::find($id);
         if ($contract) {
+            // delete files from public/images if present
+            if ($contract->file) {
+                $files = explode('|', $contract->file);
+                foreach ($files as $f) {
+                    $path = public_path('images/'.$f);
+                    if (file_exists($path)) {
+                        @unlink($path);
+                    }
+                }
+            }
             $contract->delete();
         }
         return redirect('/contracts')->with('success', 'Contract deleted');

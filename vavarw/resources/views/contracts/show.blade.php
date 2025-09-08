@@ -15,14 +15,41 @@
               <li class="list-group-item"><strong>Car ID:</strong> {{ $contract->car_id }}</li>
               <li class="list-group-item"><strong>Start Date:</strong> {{ $contract->start_date }}</li>
               <li class="list-group-item"><strong>End Date:</strong> {{ $contract->end_date }}</li>
-              <li class="list-group-item">@if($contract->file) <a href="/images/{{ $contract->file }}" target="_blank">Download file</a> @endif</li>
+              <li class="list-group-item">
+                @if($contract->file)
+                  @php $files = explode('|', $contract->file); @endphp
+                  <ul>
+                    @foreach($files as $f)
+                      <li><a href="/images/{{ $f }}" target="_blank">{{ $f }}</a></li>
+                    @endforeach
+                  </ul>
+                @endif
+              </li>
             </ul>
 
             <a href="/contracts" class="btn btn-secondary mt-3">Back</a>
+            <form action="/contracts/{{ $contract->id }}" method="POST" style="display:inline-block;" id="delete-contract-form">
+              {{ csrf_field() }}
+              {{ method_field('DELETE') }}
+              <button class="btn btn-danger mt-3" type="submit">Delete</button>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+<script>
+  (function(){
+    var f = document.getElementById('delete-contract-form');
+    if (f) {
+      f.addEventListener('submit', function(e){
+        if(!confirm('Are you sure you want to delete this contract and its files? This action cannot be undone.')){
+          e.preventDefault();
+        }
+      });
+    }
+  })();
+</script>
+
 @endsection

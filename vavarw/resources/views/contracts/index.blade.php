@@ -31,11 +31,18 @@
                   <td>{{ $c->plate_number ?? $c->model ?? 'N/A' }}</td>
                   <td>{{ $c->start_date }}</td>
                   <td>{{ $c->end_date }}</td>
-                  <td>@if($c->file)<a href="/images/{{ $c->file }}" target="_blank">Download</a>@endif</td>
+                  <td>
+                    @if($c->file)
+                      @php $files = explode('|', $c->file); @endphp
+                      @foreach($files as $f)
+                        <div><a href="/images/{{ $f }}" target="_blank">{{ $f }}</a></div>
+                      @endforeach
+                    @endif
+                  </td>
                   <td>
                     <a href="/contracts/{{ $c->id }}" class="btn btn-sm btn-info">View</a>
                     <a href="/contracts/{{ $c->id }}/edit" class="btn btn-sm btn-primary">Edit</a>
-                    <form action="/contracts/{{ $c->id }}" method="POST" style="display:inline-block;">
+                    <form action="/contracts/{{ $c->id }}" method="POST" style="display:inline-block;" class="delete-contract-form">
                       {{ csrf_field() }}
                       {{ method_field('DELETE') }}
                       <button class="btn btn-sm btn-danger" type="submit">Delete</button>
