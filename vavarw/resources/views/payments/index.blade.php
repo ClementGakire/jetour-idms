@@ -458,7 +458,7 @@ function confirmDelete(id) {
       '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
       '<div class="totals"><div class="box"><div class="label">Total Purchase Price</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
       '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
-      '<div class="status-badge">' + (status || 'APPROVED') + '</div>' +
+      '<div class="status-badge">' + (status || 'INVOICE') + '</div>' +
       '</body></html>';
 
     w.document.open();
