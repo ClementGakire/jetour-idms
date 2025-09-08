@@ -228,7 +228,7 @@
                     </tr>
                   </table>
                   <div class="totals">
-                    <div class="box"><div class="label">Total Purchase Price</div><div class="amount">{{ number_format($payment->amounts ?? 0) }}</div></div>
+                    <div class="box"><div class="label">Caution fees</div><div class="amount">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</div></div>
                     <div class="box"><div class="label">Total Selling Price</div><div class="amount">{{ number_format($payment->total_price ?? 0) }}</div></div>
                   </div>
                   <div class="status-badge">INVOICE</div>
@@ -456,8 +456,8 @@ function confirmDelete(id) {
       '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
       '<div class="row"><span class="label">Date Range(From - To):</span> ' + (bookingDate || '') + ' - ' + (returnDate || '') + '</div>' +
       '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
-      '<div class="totals"><div class="box"><div class="label">Total Purchase Price</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
-      '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
+  '<div class="totals"><div class="box"><div class="label">Caution fees</div><div class="amount">' + (caution || '0') + '</div></div>' +
+  '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
       '<div class="status-badge">' + (status || 'INVOICE') + '</div>' +
       '</body></html>';
 
