@@ -197,10 +197,8 @@
                             </button>
                           </div>
                         </td>
-          @endif
+                    @endif
                 </tr>
-            @endif
-      </tr>
             @endif
 
         @endforeach
