@@ -454,7 +454,7 @@ function confirmDelete(id) {
       '<td><div class="row"><span class="label">Model:</span> ' + (model || '') + '</div>' +
       '<div class="row"><span class="label">Plate:</span> ' + (plate || '') + '</div>' +
       '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
-      '<div class="row"><span class="label">From:</span> ' + (bookingDate || '') + ' <strong style="margin-left:12px">To:</strong> ' + (returnDate || '') + '</div>' +
+      '<div class="row"><span class="label">From:</span> ' + (bookingDate || '') + ' <strong style="margin-left:5px">To:</strong> ' + (returnDate || '') + '</div>' +
       '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
       '<div class="totals"><div class="box"><div class="label">Total Purchase Price</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
       '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
