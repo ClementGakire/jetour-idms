@@ -46,7 +46,7 @@ class ContractsController extends Controller
         $fileName = null;
         if ($file = $request->file('file')) {
             $fileName = time()."_".$file->getClientOriginalName();
-            $file->move(public_path('images'), $fileName);
+            $file->move('images', $fileName);
         }
 
         $contract = new Contract;
@@ -88,7 +88,7 @@ class ContractsController extends Controller
 
         if ($file = $request->file('file')) {
             $fileName = time()."_".$file->getClientOriginalName();
-            $file->move(public_path('images'), $fileName);
+            $file->move('images', $fileName);
             $contract->file = $fileName;
         }
 

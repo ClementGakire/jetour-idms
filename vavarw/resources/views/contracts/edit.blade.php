@@ -48,7 +48,7 @@
 								<label for="file">File (PDF or image)</label>
 								<input type="file" name="file" class="form-control">
 								@if(!empty($contract->file))
-									<p>Current: <a href="/uploads/contracts/{{ $contract->file }}" target="_blank">Download</a></p>
+									<p>Current: <a href="/images/{{ $contract->file }}" target="_blank">Download</a></p>
 								@endif
 							</div>
 
