@@ -15,7 +15,7 @@
               <li class="list-group-item"><strong>Car ID:</strong> {{ $contract->car_id }}</li>
               <li class="list-group-item"><strong>Start Date:</strong> {{ $contract->start_date }}</li>
               <li class="list-group-item"><strong>End Date:</strong> {{ $contract->end_date }}</li>
-              <li class="list-group-item">@if($contract->file) <a href="/uploads/contracts/{{ $contract->file }}" target="_blank">Download file</a> @endif</li>
+              <li class="list-group-item">@if($contract->file) <a href="/images/{{ $contract->file }}" target="_blank">Download file</a> @endif</li>
             </ul>
 
             <a href="/contracts" class="btn btn-secondary mt-3">Back</a>

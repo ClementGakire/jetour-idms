@@ -31,7 +31,7 @@
                   <td>{{ $c->plate_number ?? $c->model ?? 'N/A' }}</td>
                   <td>{{ $c->start_date }}</td>
                   <td>{{ $c->end_date }}</td>
-                  <td>@if($c->file)<a href="/uploads/contracts/{{ $c->file }}" target="_blank">Download</a>@endif</td>
+                  <td>@if($c->file)<a href="/images/{{ $c->file }}" target="_blank">Download</a>@endif</td>
                   <td>
                     <a href="/contracts/{{ $c->id }}" class="btn btn-sm btn-info">View</a>
                     <a href="/contracts/{{ $c->id }}/edit" class="btn btn-sm btn-primary">Edit</a>
