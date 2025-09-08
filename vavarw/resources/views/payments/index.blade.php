@@ -262,9 +262,6 @@
     </div>
 @endforeach
 
-        @endforeach
-    </tbody>
-</table>
 <div class="unpaid-summary text-right" style="padding:8px 12px; font-weight:600;">Total unpaid: <span class="unpaid-total">0</span></div>
             @endforeach
             <div class="text-center" style="margin-top:18px;">
