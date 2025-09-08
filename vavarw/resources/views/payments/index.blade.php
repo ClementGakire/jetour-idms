@@ -231,7 +231,7 @@
                     <div class="box"><div class="label">Total Purchase Price</div><div class="amount">{{ number_format($payment->amounts ?? 0) }}</div></div>
                     <div class="box"><div class="label">Total Selling Price</div><div class="amount">{{ number_format($payment->total_price ?? 0) }}</div></div>
                   </div>
-                  <div class="status-badge">APPROVED</div>
+                  <div class="status-badge">INVOICE</div>
                 </div>
               </td>
             </tr>
