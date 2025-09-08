@@ -47,6 +47,7 @@ class ContractsController extends Controller
         if ($file = $request->file('file')) {
             $fileName = time()."_".$file->getClientOriginalName();
             $file->move(public_path('images'), $fileName);
+            dd($fileName);
         }
 
         $contract = new Contract;
