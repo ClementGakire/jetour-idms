@@ -232,12 +232,15 @@
                     </tr>
                   </table>
                   <div class="totals">
-                    <div class="box"><div class="label">Days</div><div class="amount">{{ $numDays }}</div></div>
-                    <div class="box"><div class="label">Unit Price</div><div class="amount">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</div></div>
-                    <div class="box"><div class="label">Total</div><div class="amount">{{ number_format($totalPrice ?? 0) }}</div></div>
-                    <div class="box"><div class="label">Paid</div><div class="amount">{{ number_format($payment->advance ?? 0) }}</div></div>
-                    <div class="box"><div class="label">Balance</div><div class="amount">{{ isset($unpaid) ? number_format($unpaid) : '' }}</div></div>
-                    <div class="box"><div class="label">Caution fees</div><div class="amount">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</div></div>
+                    <h4 style="margin-bottom:10px;color:#333;">Financial Summary</h4>
+                    <table class="totals-table" style="width:100%;border-collapse:collapse;margin-top:15px;">
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;width:40%;">Days</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $numDays }}</td></tr>
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Unit Price</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</td></tr>
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Total Amount</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($totalPrice ?? 0) }}</td></tr>
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Amount Paid</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->advance ?? 0) }}</td></tr>
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Balance Due</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ isset($unpaid) ? number_format($unpaid) : '' }}</td></tr>
+                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Caution Fees</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</td></tr>
+                    </table>
                   </div>
                   <div class="status-badge">INVOICE</div>
                 </div>
@@ -455,7 +458,7 @@ function confirmDelete(id) {
 
     var w = window.open('', '_blank', 'width=900,height=700');
   var html = '<!doctype html><html><head><meta charset="utf-8"><title>Reception Print</title>' +
-      '<style>@page{size:A4;margin:18mm}body{font-family:Helvetica,Arial,sans-serif;padding:18px;color:#222}.print-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-weight:700;font-size:18px}.company-info{text-align:right;font-size:12px;color:#333}.label{font-weight:700;display:inline-block;min-width:160px}.row{margin-bottom:8px;font-size:13px}.section-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.section-table th,.section-table td{padding:10px;border:1px solid #ddd;vertical-align:top}.section-title{background:#f5f5f5;font-weight:700}.totals{margin-top:20px;font-size:14px;display:flex;gap:20px}.totals .box{padding:12px 16px;border:1px solid #e0e0e0;background:#fafafa;border-radius:6px}.totals .amount{font-weight:700;font-size:1.1em;color:#111}.status-badge{display:inline-block;padding:8px 12px;background:#2e7d32;color:#fff;border-radius:4px;font-weight:700;margin-top:12px}.watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:8rem;color:rgba(0,0,0,0.04);pointer-events:none;z-index:9999}</style>' +
+      '<style>@page{size:A4;margin:18mm}body{font-family:Helvetica,Arial,sans-serif;padding:18px;color:#222}.print-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-weight:700;font-size:18px}.company-info{text-align:right;font-size:12px;color:#333}.label{font-weight:700;display:inline-block;min-width:160px}.row{margin-bottom:8px;font-size:13px}.section-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.section-table th,.section-table td{padding:10px;border:1px solid #ddd;vertical-align:top}.section-title{background:#f5f5f5;font-weight:700}.totals{margin-top:20px;font-size:14px}.totals-table{width:100%;border-collapse:collapse;margin-top:15px}.totals-table td{padding:8px 12px;border:1px solid #ddd;font-size:13px}.totals-table .label-cell{background:#f8f9fa;font-weight:700;width:40%}.totals-table .amount-cell{text-align:right;font-weight:600}.status-badge{display:inline-block;padding:8px 12px;background:#2e7d32;color:#fff;border-radius:4px;font-weight:700;margin-top:15px}.watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:8rem;color:rgba(0,0,0,0.04);pointer-events:none;z-index:9999}</style>' +
       '</head><body><div class="watermark">INVOICE</div>' +
       '<div class="print-header"><div class="logo">JET TOURS COMPANY LIMITED</div><div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div></div>' +
       '<h3 style="text-align:center">Invoice</h3>' +
@@ -470,12 +473,16 @@ function confirmDelete(id) {
     '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
     '<div class="row"><span class="label">Date Range(From - To):</span> ' + (bookingDate || '') + ' - ' + (returnDate || '') + '</div>' +
     '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
-  '<div class="totals"><div class="box"><div class="label">Days</div><div class="amount">' + (days || '') + '</div></div>' +
-  '<div class="box"><div class="label">Unit Price</div><div class="amount">' + (unitPrice || '0') + '</div></div>' +
-  '<div class="box"><div class="label">Total</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
-  '<div class="box"><div class="label">Paid</div><div class="amount">' + (paid || '0') + '</div></div>' +
-  '<div class="box"><div class="label">Balance</div><div class="amount">' + (unpaid || '0') + '</div></div>' +
-  '<div class="box"><div class="label">Caution fees</div><div class="amount">' + (caution || '0') + '</div></div>' +
+  '<div class="totals">' +
+  '<h4 style="margin-bottom:10px;color:#333;">Financial Summary</h4>' +
+  '<table class="totals-table">' +
+  '<tr><td class="label-cell">Days</td><td class="amount-cell">' + (days || '') + '</td></tr>' +
+  '<tr><td class="label-cell">Unit Price</td><td class="amount-cell">' + (unitPrice || '0') + '</td></tr>' +
+  '<tr><td class="label-cell">Total Amount</td><td class="amount-cell">' + (totalPrice || '0') + '</td></tr>' +
+  '<tr><td class="label-cell">Amount Paid</td><td class="amount-cell">' + (paid || '0') + '</td></tr>' +
+  '<tr><td class="label-cell">Balance Due</td><td class="amount-cell">' + (unpaid || '0') + '</td></tr>' +
+  '<tr><td class="label-cell">Caution Fees</td><td class="amount-cell">' + (caution || '0') + '</td></tr>' +
+  '</table>' +
   '</div>' +
     '<div class="status-badge">' + (status || 'INVOICE') + '</div>' +
       '</body></html>';
