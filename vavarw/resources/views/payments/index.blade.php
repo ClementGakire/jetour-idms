@@ -131,44 +131,44 @@
 
 
             @if($status)
-                <tr>
-                    <td class="text-center">{{ $loop->iteration }}</td>
-                    <td class="text-center">{{ $payment->model }}</td>
-                    <td class="text-center">{{ $payment->plate_number }}</td>
-                    <td class="text-center">
+                <tr id="payment-row-{{ $payment->id }}">
+                    <td class="text-center cell-sno">{{ $loop->iteration }}</td>
+                    <td class="text-center cell-model">{{ $payment->model }}</td>
+                    <td class="text-center cell-plate">{{ $payment->plate_number }}</td>
+                    <td class="text-center cell-booking_date">
                         {{ $status !== 'Parking' ? ($payment->booking_date ?? '') : '' }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center cell-return_date">
                         {{ $status !== 'Parking' ? ($payment->return_date ?? '') : '' }}
                     </td>
-                    <td class="text-center">
+                    <td class="text-center cell-unit_price">
                         {{ $status !== 'Parking' && $payment->unit_price ? number_format($payment->unit_price) : '' }}
                     </td>
-          <td class="text-center">
+          <td class="text-center cell-total_price">
             {{ $status !== 'Parking' && $totalPrice ? number_format($totalPrice) : '' }}
           </td>
-          <td class="text-center">
+          <td class="text-center cell-unpaid">
             @php
               $advance = $payment->advance ?? 0;
               $unpaid = ($totalPrice && $status !== 'Parking') ? max(0, $totalPrice - $advance) : null;
             @endphp
             {{ $unpaid !== null ? number_format($unpaid) : '' }}
           </td>
-                    <td class="text-center">
+                    <td class="text-center cell-client">
             @if($status !== 'Parking')
-              <div>{{ $payment->client ?? '' }}</div>
-              <div style="font-size:11px;color:#555;">{{ $payment->phone_number ?? '' }}</div>
+              <div class="client-name">{{ $payment->client ?? '' }}</div>
+              <div class="client-phone" style="font-size:11px;color:#555;">{{ $payment->phone_number ?? '' }}</div>
             @endif
                     </td>
-                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
-                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
-                    <td class="text-center">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
+                    <td class="text-center cell-driver">{{ $status !== 'Parking' ? ($payment->driver_name ?? '') : '' }}</td>
+                    <td class="text-center cell-driver_phone">{{ $status !== 'Parking' ? ($payment->driver_phone ?? '') : '' }}</td>
+                    <td class="text-center cell-advance">{{ $status !== 'Parking' ? ($payment->advance ?? '') : '' }}</td>
                     @php $caution = $payment->caution ?? $payment->caution_amount ?? null; @endphp
-                    <td class="text-center">{{ $status !== 'Parking' && $caution ? number_format($caution) : '' }}</td>
-                    <td class="text-center">
+                    <td class="text-center cell-caution">{{ $status !== 'Parking' && $caution ? number_format($caution) : '' }}</td>
+                    <td class="text-center cell-status">
             <span class="badge {{ $badgeClass }}">{{ $status }}</span>
           </td>
-                    <td class="text-center">
+                    <td class="text-center cell-checked">
                       @php $checked = $payment->checked_status ?? 'no'; @endphp
                       @if(strtolower($checked) === 'yes')
                         <span class="badge badge-checked-yes">Yes</span>
@@ -176,7 +176,7 @@
                         <span class="badge badge-checked-no">No</span>
                       @endif
                     </td>
-                    <td class="text-center">
+                    <td class="text-center cell-booked_by">
                         {{ $status !== 'Parking' ? ($payment->username ?? '') : '' }}
                     </td>
                     @if(Auth::user()->id == 1)
@@ -191,11 +191,50 @@
                             </form>
                             <a href="/payments/{{ $payment->id }}" class="btn btn-info action-btn" title="View"><i class="fas fa-eye"></i></a>
                             <a href="/payments/{{ $payment->id }}/edit" class="btn btn-light action-btn" title="Edit"><i class="fas fa-edit text-success"></i></a>
+                            <!-- Print action: opens printable template in popup and triggers print -->
+                            <button type="button" class="btn btn-primary action-btn" title="Print" onclick="printApproved({{ $payment->id }})">
+                              <i class="fas fa-print"></i>
+                            </button>
                           </div>
                         </td>
           @endif
                 </tr>
             @endif
+            <!-- Hidden printable template for this payment -->
+            <tr style="display:none;">
+              <td colspan="100">
+                <div id="printable-{{ $payment->id }}" style="display:none;">
+                  <div class="print-header">
+                    <div class="logo">JET TOURS COMPANY LIMITED</div>
+                    <div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div>
+                  </div>
+                  <h3 style="text-align:center;">Invoice</h3>
+                  <table class="section-table" style="width:100%;">
+                    <tr class="section-title"><th>Supplier</th><th>Operation</th></tr>
+                    <tr>
+                      <td>
+                        <div class="row"><span class="label">Supplier:</span> {{ $payment->institution ?? '' }}</div>
+                        
+                      </td>
+                      <td>
+                        <div class="row"><span class="label">P.O Number:</span> {{ $payment->voucherNo ?? '' }}</div>
+                        <div class="row"><span class="label">Contractor:</span> {{ $payment->contractor_name ?? '' }}</div>
+                        <div class="row"><span class="label">Operator:</span> {{ $payment->booked_by ?? '' }}</div>
+                        <div class="row"><span class="label">Destination:</span> {{ $payment->client ?? '' }}</div>
+                        <div class="row"><span class="label">Plate:</span> {{ $payment->plate_number ?? '' }}</div>
+                        <div class="row"><span class="label">Driver:</span> {{ $payment->driver_name ?? '' }} ({{ $payment->driver_phone ?? '' }})</div>
+                        <div class="row"><span class="label">Starting Date:</span> {{ $payment->booking_date ?? '' }} <span style="margin-left:12px;"><strong>Ending Date:</strong> {{ $payment->return_date ?? '' }}</span></div>
+                      </td>
+                    </tr>
+                  </table>
+                  <div class="totals">
+                    <div class="box"><div class="label">Total Purchase Price</div><div class="amount">{{ number_format($payment->amounts ?? 0) }}</div></div>
+                    <div class="box"><div class="label">Total Selling Price</div><div class="amount">{{ number_format($payment->total_price ?? 0) }}</div></div>
+                  </div>
+                  <div class="status-badge">APPROVED</div>
+                </div>
+              </td>
+            </tr>
 
         @endforeach
     </tbody>
@@ -377,3 +416,54 @@ function confirmDelete(id) {
 
 @endif
 @endsection
+
+<script>
+  // Print helper: opens a popup with the printable template and triggers print
+  function printApproved(id) {
+    var row = document.getElementById('payment-row-' + id);
+    if (!row) {
+      alert('Row not found for id ' + id);
+      return;
+    }
+    // read values from the row cells
+    function text(sel) { var el = row.querySelector(sel); return el ? el.textContent.trim() : ''; }
+    var model = text('.cell-model');
+    var plate = text('.cell-plate');
+    var bookingDate = text('.cell-booking_date');
+    var returnDate = text('.cell-return_date');
+    var unitPrice = text('.cell-unit_price');
+    var totalPrice = text('.cell-total_price');
+    var unpaid = text('.cell-unpaid');
+    var client = text('.client-name');
+    var phone = text('.client-phone');
+    var driver = text('.cell-driver');
+    var driverPhone = text('.cell-driver_phone');
+    var advance = text('.cell-advance');
+    var caution = text('.cell-caution');
+    var status = text('.cell-status');
+    var bookedBy = text('.cell-booked_by');
+
+    var w = window.open('', '_blank', 'width=900,height=700');
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Reception Print</title>' +
+      '<style>@page{size:A4;margin:18mm}body{font-family:Helvetica,Arial,sans-serif;padding:18px;color:#222}.print-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-weight:700;font-size:18px}.company-info{text-align:right;font-size:12px;color:#333}.label{font-weight:700;display:inline-block;min-width:160px}.row{margin-bottom:8px;font-size:13px}.section-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.section-table th,.section-table td{padding:10px;border:1px solid #ddd;vertical-align:top}.section-title{background:#f5f5f5;font-weight:700}.totals{margin-top:20px;font-size:14px;display:flex;gap:20px}.totals .box{padding:12px 16px;border:1px solid #e0e0e0;background:#fafafa;border-radius:6px}.totals .amount{font-weight:700;font-size:1.1em;color:#111}.status-badge{display:inline-block;padding:8px 12px;background:#2e7d32;color:#fff;border-radius:4px;font-weight:700;margin-top:12px}.watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:8rem;color:rgba(0,0,0,0.04);pointer-events:none;z-index:9999}</style>' +
+      '</head><body><div class="watermark">APPROVED</div>' +
+      '<div class="print-header"><div class="logo">JET TOURS COMPANY LIMITED</div><div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div></div>' +
+      '<h3 style="text-align:center">Reception / Approved Report</h3>' +
+      '<table class="section-table"><tr class="section-title"><th>Supplier</th><th>Operation</th></tr>' +
+      '<tr><td><div class="row"><span class="label">Supplier:</span> ' + (client || '') + '</div><div class="row"><span class="label">Phone:</span> ' + (phone || '') + '</div></td>' +
+      '<td><div class="row"><span class="label">Model:</span> ' + (model || '') + '</div>' +
+      '<div class="row"><span class="label">Plate:</span> ' + (plate || '') + '</div>' +
+      '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
+      '<div class="row"><span class="label">Starting Date:</span> ' + (bookingDate || '') + ' <strong style="margin-left:12px">Ending Date:</strong> ' + (returnDate || '') + '</div>' +
+      '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
+      '<div class="totals"><div class="box"><div class="label">Total Purchase Price</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
+      '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
+      '<div class="status-badge">' + (status || 'APPROVED') + '</div>' +
+      '</body></html>';
+
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setTimeout(function(){ w.focus(); w.print(); }, 300);
+  }
+</script>

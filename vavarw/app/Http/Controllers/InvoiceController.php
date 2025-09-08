@@ -156,19 +156,6 @@ class InvoiceController extends Controller
         $invoice->delete();
         return redirect('/invoices')->with('success','invoice deleted');
     }
-    
-    /**
-     * Render a generated printable invoice by id.
-     */
-    public function generated($id)
-    {
-        $invoice = Invoice::find($id);
-
-        // try to find a payment linked to this invoiceNumber
-        $payment = DB::table('payments')->where('invoiceNumber', $invoice->invoiceNumber)->leftJoin('cars', 'payments.car_id', 'cars.id')->leftJoin('drivers', 'payments.driver_id', 'drivers.id')->select('payments.*', 'cars.plate_number', 'drivers.name as driver_name', 'drivers.phone_number as driver_phone')->first();
-
-        return view('invoices.generated')->with('invoice', $invoice)->with('payment', $payment);
-    }
     public function users()
     {
 
