@@ -131,7 +131,7 @@
 
 
             @if($status)
-                <tr id="payment-row-{{ $payment->id }}">
+                <tr id="payment-row-{{ $payment->id }}" data-days="{{ $numDays }}">
                     <td class="text-center cell-sno">{{ $loop->iteration }}</td>
                     <td class="text-center cell-model">{{ $payment->model }}</td>
                     <td class="text-center cell-plate">{{ $payment->plate_number }}</td>
@@ -200,7 +200,7 @@
           @endif
                 </tr>
             @endif
-            <!-- Hidden printable template for this payment -->
+      <!-- Hidden printable template for this payment -->
             <tr style="display:none;">
               <td colspan="100">
                 <div id="printable-{{ $payment->id }}" style="display:none;">
@@ -210,11 +210,15 @@
                   </div>
                   <h3 style="text-align:center;">Invoice</h3>
                   <table class="section-table" style="width:100%;">
-                    <tr class="section-title"><th>Supplier</th><th>Operation</th></tr>
+          <tr class="section-title"><th>Client</th><th>Operation</th></tr>
                     <tr>
                       <td>
-                        <div class="row"><span class="label">Supplier:</span> {{ $payment->institution ?? '' }}</div>
-                        
+            <div class="row"><span class="label">Client:</span> {{ $payment->client ?? '' }}</div>
+            <div class="row"><span class="label">Phone:</span> {{ $payment->phone_number ?? '' }}</div>
+            <div class="row"><span class="label">Days:</span> {{ $numDays }}</div>
+            <div class="row"><span class="label">Unit Price:</span> {{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</div>
+            <div class="row"><span class="label">Paid:</span> {{ $payment->advance ? number_format($payment->advance) : 0 }}</div>
+            <div class="row"><span class="label">Balance:</span> {{ isset($unpaid) ? number_format($unpaid) : '' }}</div>
                       </td>
                       <td>
                         <div class="row"><span class="label">P.O Number:</span> {{ $payment->voucherNo ?? '' }}</div>
@@ -228,8 +232,12 @@
                     </tr>
                   </table>
                   <div class="totals">
+                    <div class="box"><div class="label">Days</div><div class="amount">{{ $numDays }}</div></div>
+                    <div class="box"><div class="label">Unit Price</div><div class="amount">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</div></div>
+                    <div class="box"><div class="label">Total</div><div class="amount">{{ number_format($totalPrice ?? 0) }}</div></div>
+                    <div class="box"><div class="label">Paid</div><div class="amount">{{ number_format($payment->advance ?? 0) }}</div></div>
+                    <div class="box"><div class="label">Balance</div><div class="amount">{{ isset($unpaid) ? number_format($unpaid) : '' }}</div></div>
                     <div class="box"><div class="label">Caution fees</div><div class="amount">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</div></div>
-                    <div class="box"><div class="label">Total Selling Price</div><div class="amount">{{ number_format($payment->total_price ?? 0) }}</div></div>
                   </div>
                   <div class="status-badge">INVOICE</div>
                 </div>
@@ -431,9 +439,11 @@ function confirmDelete(id) {
     var plate = text('.cell-plate');
     var bookingDate = text('.cell-booking_date');
     var returnDate = text('.cell-return_date');
-    var unitPrice = text('.cell-unit_price');
-    var totalPrice = text('.cell-total_price');
-    var unpaid = text('.cell-unpaid');
+  var days = row.getAttribute('data-days') || '';
+  var unitPrice = text('.cell-unit_price');
+  var totalPrice = text('.cell-total_price');
+  var unpaid = text('.cell-unpaid');
+  var paid = text('.cell-advance') || '0';
     var client = text('.client-name');
     var phone = text('.client-phone');
     var driver = text('.cell-driver');
@@ -444,21 +454,30 @@ function confirmDelete(id) {
     var bookedBy = text('.cell-booked_by');
 
     var w = window.open('', '_blank', 'width=900,height=700');
-    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Reception Print</title>' +
+  var html = '<!doctype html><html><head><meta charset="utf-8"><title>Reception Print</title>' +
       '<style>@page{size:A4;margin:18mm}body{font-family:Helvetica,Arial,sans-serif;padding:18px;color:#222}.print-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.logo{font-weight:700;font-size:18px}.company-info{text-align:right;font-size:12px;color:#333}.label{font-weight:700;display:inline-block;min-width:160px}.row{margin-bottom:8px;font-size:13px}.section-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}.section-table th,.section-table td{padding:10px;border:1px solid #ddd;vertical-align:top}.section-title{background:#f5f5f5;font-weight:700}.totals{margin-top:20px;font-size:14px;display:flex;gap:20px}.totals .box{padding:12px 16px;border:1px solid #e0e0e0;background:#fafafa;border-radius:6px}.totals .amount{font-weight:700;font-size:1.1em;color:#111}.status-badge{display:inline-block;padding:8px 12px;background:#2e7d32;color:#fff;border-radius:4px;font-weight:700;margin-top:12px}.watermark{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%) rotate(-28deg);font-size:8rem;color:rgba(0,0,0,0.04);pointer-events:none;z-index:9999}</style>' +
       '</head><body><div class="watermark">INVOICE</div>' +
       '<div class="print-header"><div class="logo">JET TOURS COMPANY LIMITED</div><div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div></div>' +
       '<h3 style="text-align:center">Invoice</h3>' +
-      '<table class="section-table"><tr class="section-title"><th>Supplier</th><th>Operation</th></tr>' +
-      '<tr><td><div class="row"><span class="label">Supplier:</span> ' + (client || '') + '</div><div class="row"><span class="label">Phone:</span> ' + (phone || '') + '</div></td>' +
-      '<td><div class="row"><span class="label">Model:</span> ' + (model || '') + '</div>' +
-      '<div class="row"><span class="label">Plate:</span> ' + (plate || '') + '</div>' +
-      '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
-      '<div class="row"><span class="label">Date Range(From - To):</span> ' + (bookingDate || '') + ' - ' + (returnDate || '') + '</div>' +
-      '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
-  '<div class="totals"><div class="box"><div class="label">Caution fees</div><div class="amount">' + (caution || '0') + '</div></div>' +
-  '<div class="box"><div class="label">Total Selling Price</div><div class="amount">' + (totalPrice || '0') + '</div></div></div>' +
-      '<div class="status-badge">' + (status || 'INVOICE') + '</div>' +
+    '<table class="section-table"><tr class="section-title"><th>Client</th><th>Operation</th></tr>' +
+    '<tr><td><div class="row"><span class="label">Client:</span> ' + (client || '') + '</div><div class="row"><span class="label">Phone:</span> ' + (phone || '') + '</div>' +
+    '<div class="row"><span class="label">Days:</span> ' + (days || '') + '</div>' +
+    '<div class="row"><span class="label">Unit Price:</span> ' + (unitPrice || '') + '</div>' +
+    '<div class="row"><span class="label">Paid:</span> ' + (paid || '0') + '</div>' +
+    '<div class="row"><span class="label">Balance:</span> ' + (unpaid || '0') + '</div></td>' +
+    '<td><div class="row"><span class="label">Model:</span> ' + (model || '') + '</div>' +
+    '<div class="row"><span class="label">Plate:</span> ' + (plate || '') + '</div>' +
+    '<div class="row"><span class="label">Driver:</span> ' + (driver || '') + ' (' + (driverPhone || '') + ')</div>' +
+    '<div class="row"><span class="label">Date Range(From - To):</span> ' + (bookingDate || '') + ' - ' + (returnDate || '') + '</div>' +
+    '<div class="row"><span class="label">Booked By:</span> ' + (bookedBy || '') + '</div></td></tr></table>' +
+  '<div class="totals"><div class="box"><div class="label">Days</div><div class="amount">' + (days || '') + '</div></div>' +
+  '<div class="box"><div class="label">Unit Price</div><div class="amount">' + (unitPrice || '0') + '</div></div>' +
+  '<div class="box"><div class="label">Total</div><div class="amount">' + (totalPrice || '0') + '</div></div>' +
+  '<div class="box"><div class="label">Paid</div><div class="amount">' + (paid || '0') + '</div></div>' +
+  '<div class="box"><div class="label">Balance</div><div class="amount">' + (unpaid || '0') + '</div></div>' +
+  '<div class="box"><div class="label">Caution fees</div><div class="amount">' + (caution || '0') + '</div></div>' +
+  '</div>' +
+    '<div class="status-badge">' + (status || 'INVOICE') + '</div>' +
       '</body></html>';
 
     w.document.open();
