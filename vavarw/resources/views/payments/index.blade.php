@@ -223,7 +223,7 @@
                         <div class="row"><span class="label">Destination:</span> {{ $payment->client ?? '' }}</div>
                         <div class="row"><span class="label">Plate:</span> {{ $payment->plate_number ?? '' }}</div>
                         <div class="row"><span class="label">Driver:</span> {{ $payment->driver_name ?? '' }} ({{ $payment->driver_phone ?? '' }})</div>
-                        <div class="row"><span class="label">Starting Date:</span> {{ $payment->booking_date ?? '' }} <span style="margin-left:12px;"><strong>Ending Date:</strong> {{ $payment->return_date ?? '' }}</span></div>
+                        <div class="row"><span class="label">From:</span> {{ $payment->booking_date ?? '' }} <span style="margin-left:12px;"><strong>To:</strong> {{ $payment->return_date ?? '' }}</span></div>
                       </td>
                     </tr>
                   </table>
