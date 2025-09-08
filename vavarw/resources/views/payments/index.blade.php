@@ -200,52 +200,67 @@
           @endif
                 </tr>
             @endif
-      <!-- Hidden printable template for this payment -->
-            <tr style="display:none;">
-              <td colspan="100">
-                <div id="printable-{{ $payment->id }}" style="display:none;">
-                  <div class="print-header">
-                    <div class="logo">JET TOURS COMPANY LIMITED</div>
-                    <div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div>
-                  </div>
-                  <h3 style="text-align:center;">Invoice</h3>
-                  <table class="section-table" style="width:100%;">
-          <tr class="section-title"><th>Client</th><th>Operation</th></tr>
-                    <tr>
-                      <td>
-            <div class="row"><span class="label">Client:</span> {{ $payment->client ?? '' }}</div>
-            <div class="row"><span class="label">Phone:</span> {{ $payment->phone_number ?? '' }}</div>
-            <div class="row"><span class="label">Days:</span> {{ $numDays }}</div>
-            <div class="row"><span class="label">Unit Price:</span> {{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</div>
-            <div class="row"><span class="label">Paid:</span> {{ $payment->advance ? number_format($payment->advance) : 0 }}</div>
-            <div class="row"><span class="label">Balance:</span> {{ isset($unpaid) ? number_format($unpaid) : '' }}</div>
-                      </td>
-                      <td>
-                        <div class="row"><span class="label">P.O Number:</span> {{ $payment->voucherNo ?? '' }}</div>
-                        <div class="row"><span class="label">Contractor:</span> {{ $payment->contractor_name ?? '' }}</div>
-                        <div class="row"><span class="label">Operator:</span> {{ $payment->booked_by ?? '' }}</div>
-                        <div class="row"><span class="label">Destination:</span> {{ $payment->client ?? '' }}</div>
-                        <div class="row"><span class="label">Plate:</span> {{ $payment->plate_number ?? '' }}</div>
-                        <div class="row"><span class="label">Driver:</span> {{ $payment->driver_name ?? '' }} ({{ $payment->driver_phone ?? '' }})</div>
-                        <div class="row"><span class="label">From:</span> {{ $payment->booking_date ?? '' }} <span style="margin-left:12px;"><strong>To:</strong> {{ $payment->return_date ?? '' }}</span></div>
-                      </td>
-                    </tr>
-                  </table>
-                  <div class="totals">
-                    <h4 style="margin-bottom:10px;color:#333;">Financial Summary</h4>
-                    <table class="totals-table" style="width:100%;border-collapse:collapse;margin-top:15px;">
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;width:40%;">Days</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $numDays }}</td></tr>
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Unit Price</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</td></tr>
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Total Amount</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($totalPrice ?? 0) }}</td></tr>
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Amount Paid</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->advance ?? 0) }}</td></tr>
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Balance Due</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ isset($unpaid) ? number_format($unpaid) : '' }}</td></tr>
-                      <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Caution Fees</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</td></tr>
-                    </table>
-                  </div>
-                  <div class="status-badge">INVOICE</div>
-                </div>
-              </td>
+      </tr>
+            @endif
+
+        @endforeach
+    </tbody>
+</table>
+
+<!-- Hidden printable templates for all payments (outside table to avoid DataTables conflicts) -->
+@foreach($modelPayments as $payment)
+    @php
+        $today = now()->startOfDay();
+        $bookingDate = $payment->booking_date ? \Carbon\Carbon::parse($payment->booking_date)->startOfDay() : null;
+        $returnDate = $payment->return_date ? \Carbon\Carbon::parse($payment->return_date)->startOfDay() : null;
+        $numDays = $bookingDate && $returnDate ? $bookingDate->diffInDays($returnDate) + 1 : 0;
+        $totalPrice = $numDays * ($payment->unit_price ?? 0);
+        $advance = $payment->advance ?? 0;
+        $unpaid = ($totalPrice && $status !== 'Parking') ? max(0, $totalPrice - $advance) : null;
+    @endphp
+    
+    <div id="printable-{{ $payment->id }}" style="display:none;">
+        <div class="print-header">
+            <div class="logo">JET TOURS COMPANY LIMITED</div>
+            <div class="company-info">96 KK 15 Rd, Kigali<br>Tel: (+250) 788 483 025</div>
+        </div>
+        <h3 style="text-align:center;">Invoice</h3>
+        <table class="section-table" style="width:100%;">
+            <tr class="section-title"><th>Client</th><th>Operation</th></tr>
+            <tr>
+                <td>
+                    <div class="row"><span class="label">Client:</span> {{ $payment->client ?? '' }}</div>
+                    <div class="row"><span class="label">Phone:</span> {{ $payment->phone_number ?? '' }}</div>
+                    <div class="row"><span class="label">Days:</span> {{ $numDays }}</div>
+                    <div class="row"><span class="label">Unit Price:</span> {{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</div>
+                    <div class="row"><span class="label">Paid:</span> {{ $payment->advance ? number_format($payment->advance) : 0 }}</div>
+                    <div class="row"><span class="label">Balance:</span> {{ isset($unpaid) ? number_format($unpaid) : '' }}</div>
+                </td>
+                <td>
+                    <div class="row"><span class="label">P.O Number:</span> {{ $payment->voucherNo ?? '' }}</div>
+                    <div class="row"><span class="label">Contractor:</span> {{ $payment->contractor_name ?? '' }}</div>
+                    <div class="row"><span class="label">Operator:</span> {{ $payment->booked_by ?? '' }}</div>
+                    <div class="row"><span class="label">Destination:</span> {{ $payment->client ?? '' }}</div>
+                    <div class="row"><span class="label">Plate:</span> {{ $payment->plate_number ?? '' }}</div>
+                    <div class="row"><span class="label">Driver:</span> {{ $payment->driver_name ?? '' }} ({{ $payment->driver_phone ?? '' }})</div>
+                    <div class="row"><span class="label">From:</span> {{ $payment->booking_date ?? '' }} <span style="margin-left:12px;"><strong>To:</strong> {{ $payment->return_date ?? '' }}</span></div>
+                </td>
             </tr>
+        </table>
+        <div class="totals">
+            <h4 style="margin-bottom:10px;color:#333;">Financial Summary</h4>
+            <table class="totals-table" style="width:100%;border-collapse:collapse;margin-top:15px;">
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;width:40%;">Days</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $numDays }}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Unit Price</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Total Amount</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($totalPrice ?? 0) }}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Amount Paid</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->advance ?? 0) }}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Balance Due</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ isset($unpaid) ? number_format($unpaid) : '' }}</td></tr>
+                <tr><td style="padding:8px 12px;border:1px solid #ddd;background:#f8f9fa;font-weight:700;">Caution Fees</td><td style="padding:8px 12px;border:1px solid #ddd;text-align:right;font-weight:600;">{{ number_format($payment->caution ?? $payment->caution_amount ?? 0) }}</td></tr>
+            </table>
+        </div>
+        <div class="status-badge">INVOICE</div>
+    </div>
+@endforeach
 
         @endforeach
     </tbody>
@@ -268,10 +283,13 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<!-- DataTables CSS and JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.bootstrap4.min.css">
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
