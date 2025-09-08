@@ -17,7 +17,7 @@
 							<div class="form-group">
 								<label for="client">Client</label>
 								<select name="client_id" class="form-control">
-									<option value="">-- Choose client --</option>
+									<option value="">-- Choose Client --</option>
 									@foreach($clients as $c)
 										<option value="{{ $c->id }}" @if($contract->client_id == $c->id) selected @endif>{{ $c->name }}</option>
 									@endforeach
@@ -27,7 +27,7 @@
 							<div class="form-group">
 								<label for="car">Car</label>
 								<select name="car_id" class="form-control">
-									<option value="">-- Choose car --</option>
+									<option value="">-- Choose Car --</option>
 									@foreach($cars as $car)
 										<option value="{{ $car->id }}" @if($contract->car_id == $car->id) selected @endif>{{ $car->plate_number }} - {{ $car->model }}</option>
 									@endforeach
