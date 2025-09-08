@@ -8,6 +8,7 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('invoices', 'InvoiceController');
+Route::get('invoices/{id}/generated', 'InvoiceController@generated')->name('invoices.generated');
 
 Route::resource('payments', 'PaymentController');
 // Booking history page (uses PaymentController@bookingHistory)

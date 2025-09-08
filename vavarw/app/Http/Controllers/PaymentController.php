@@ -226,8 +226,51 @@ class PaymentController extends Controller
         $payment->total_price = $days * $payment->unit_price;
     
         $payment->save();
-    
-        return redirect('/payments')->with('success', 'Booking saved');
+
+        // Create or attach invoice when a booking is created
+        try {
+            // If invoiceNumber provided, check if invoice exists
+            $invoiceNumber = $payment->invoiceNumber ?: null;
+
+            if ($invoiceNumber) {
+                $invoice = DB::table('invoices')->where('invoiceNumber', $invoiceNumber)->first();
+            } else {
+                $invoice = null;
+            }
+
+            if (!$invoice) {
+                // create a basic invoice record using some payment fields
+                $newInvoiceId = DB::table('invoices')->insertGetId([
+                    'user_id' => Auth()->user()->id,
+                    'institution' => $payment->institution,
+                    'invoiceNumber' => $invoiceNumber ?? 'INV-' . time() . '-' . $payment->id,
+                    'purchase_order' => $payment->voucherNo,
+                    'created_on' => $payment->booking_date,
+                    'received_on' => $payment->booking_date,
+                    'amount' => $payment->amounts,
+                    'ebm_number' => null,
+                    'files' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                // update payment with generated invoiceNumber if it was missing
+                if (!$invoiceNumber) {
+                    $generatedInvoiceNumber = DB::table('invoices')->where('id', $newInvoiceId)->value('invoiceNumber');
+                    $payment->invoiceNumber = $generatedInvoiceNumber;
+                    $payment->save();
+                }
+
+                // set invoice var for redirect below
+                $invoice = DB::table('invoices')->where('id', $newInvoiceId)->first();
+            }
+
+            // redirect to generated invoice view
+            return redirect()->action('InvoiceController@generated', [$invoice->id])->with('success', 'Booking saved and invoice generated');
+        } catch (\Exception $e) {
+            // on failure, still return to payments list
+            return redirect('/payments')->with('success', 'Booking saved');
+        }
     }
 
 
