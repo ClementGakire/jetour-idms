@@ -179,7 +179,7 @@
                     <td class="text-center cell-booked_by">
                         {{ $status !== 'Parking' ? ($payment->username ?? '') : '' }}
                     </td>
-                    @if(Auth::user()->id == 1)
+                    
                         <td class="text-center">
                           <div class="action-buttons">
                             <form action="{{ action('PaymentController@destroy', [$payment->id]) }}" method="POST" id="deleteForm-{{ $payment->id }}" style="margin:0;">
@@ -197,7 +197,7 @@
                             </button>
                           </div>
                         </td>
-                    @endif
+                    
                 </tr>
             @endif
 
