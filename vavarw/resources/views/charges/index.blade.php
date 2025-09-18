@@ -11,6 +11,19 @@
               <div class="col-xl-11 col-12 mb-4 mb-xl-0">
                 <h3 class="text-muted text-center mb-3">Expenses</h3>
                 <div style="padding-bottom: 20px;">
+                    
+                    <!-- Expense Type Filter -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="expense_filter">Filter by Type:</label>
+                            <select id="expense_filter" class="form-control">
+                                <option value="">All Expenses</option>
+                                <option value="vehicle">Vehicle Expenses</option>
+                                <option value="office">Office Expenses</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                  <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
 
@@ -55,7 +68,13 @@
         	<tr>
         		
         		<td>{{ $charge->roadmap }}</td>
-                <td>{{ $charge->plate_number }}</td>
+                <td>
+                    @if($charge->plate_number)
+                        {{ $charge->plate_number }}
+                    @else
+                        <span class="badge badge-info">Office Expenses</span>
+                    @endif
+                </td>
                 <td>{{ $charge->supplier_name ?? '' }}</td>
                 <td>{{ $charge->name }}</td>
                 <td>{{ $charge->driver }}</td>
@@ -116,6 +135,29 @@
     <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
     <script>
         $(document).ready(function(){
+              // Custom filtering function for expense types
+              $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    var expenseFilter = $('#expense_filter').val();
+                    var carColumn = data[1]; // Car column
+                    
+                    if (expenseFilter === '') {
+                        return true; // Show all
+                    }
+                    
+                    if (expenseFilter === 'office' && carColumn.includes('Office Expenses')) {
+                        return true;
+                    }
+                    
+                    if (expenseFilter === 'vehicle' && !carColumn.includes('Office Expenses')) {
+                        return true;
+                    }
+                    
+                    return false;
+                }
+              );
+              
+              // Date filtering function
               $.fn.dataTable.ext.search.push(
           function (settings, data, dataIndex) {
               var min = $('.min').datepicker("getDate");
@@ -147,6 +189,10 @@
                });
               var table = $('#example').DataTable();
 
+              // Expense type filter event
+              $('#expense_filter').change(function () {
+                  table.draw();
+              });
               
               $('#min, #max').change(function () {
                   table.draw();

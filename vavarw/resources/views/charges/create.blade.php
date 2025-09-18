@@ -14,18 +14,54 @@
               <div class="col-xl-11 col-12 mb-4 mb-xl-0">
                 <h3 class="text-muted text-left mb-3">INSERT EXPENSE</h3>
                 
+                <!-- Expense Type Selector -->
+                <div class="alert alert-info mb-4">
+                    <h5><i class="fas fa-info-circle"></i> Expense Type</h5>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="expense_type" id="vehicle_expense" value="vehicle" checked>
+                        <label class="form-check-label" for="vehicle_expense">
+                            <i class="fas fa-car"></i> Vehicle Expense
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="expense_type" id="office_expense" value="office">
+                        <label class="form-check-label" for="office_expense">
+                            <i class="fas fa-building"></i> Office Expense
+                        </label>
+                    </div>
+                </div>
+                
                <form action="{{ action('ChargesController@store') }}" method="POST" enctype="multipart/form-data">
                       {{ csrf_field() }}
-                      <div class="form-group">
-                        <label for="title">Car</label>
-                        <input type="" name="car_id" list="institutions" class="form-control" placeholder="Search Car" required="" id="txts">
-                        <datalist id="institutions">  
-                        
-                          @foreach($cars as $car)
-                          <option value="{{$car->id}}">{{$car->plate_number}}</option>
-                          @endforeach
-                        </datalist>
-
+                      
+                      <!-- Vehicle-related fields -->
+                      <div id="vehicle-fields">
+                          <div class="form-group">
+                            <label for="title">Car <span class="text-danger">*</span></label>
+                            <input type="" name="car_id" list="institutions" class="form-control" placeholder="Search Car" id="car_input">
+                            <datalist id="institutions">  
+                            
+                              @foreach($cars as $car)
+                              <option value="{{$car->id}}">{{$car->plate_number}}</option>
+                              @endforeach
+                            </datalist>
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="title">Driver</label>
+                            <input type="" name="driver_id" list="drivers" class="form-control" placeholder="Search Driver" id="driver_input">
+                            <datalist id="drivers">  
+                            
+                              @foreach($drivers as $driver)
+                              <option value="{{$driver->id}}">{{$driver->name}}</option>
+                              @endforeach
+                            </datalist>
+                          </div>
+                      </div>
+                      
+                      <!-- Office expense notice -->
+                      <div id="office-notice" class="alert alert-success" style="display: none;">
+                          <i class="fas fa-building"></i> <strong>Office Expense:</strong> Car and Driver fields are not required for office expenses.
                       </div>
                       <!-- <div class="form-group">
                         <label for="title">Purchase Order Number</label>
@@ -43,7 +79,7 @@
                         <input type="date" class="form-control" id="title" placeholder="Date" name="date">
                       </div>
                       <div class="form-group">
-                        <label for="title">Expense Type</label>
+                        <label for="title">Expense Type <span class="text-danger">*</span></label>
                         <input type="" name="expense_id" list="expenses" class="form-control" placeholder="Search Expense Type" required="" id="txts">
                         <datalist id="expenses">  
                         
@@ -54,8 +90,8 @@
 
                       </div>
                       <div class="form-group">
-                        <label for="title">Driver</label>
-                        <input type="" name="driver_id" list="drivers" class="form-control" placeholder="Search Driver" id="txts">
+                        <label for="title">Driver <small class="text-muted">(Optional for Office Expenses)</small></label>
+                        <input type="" name="driver_id" list="drivers" class="form-control" placeholder="Search Driver (Optional)" id="txts">
                         <datalist id="drivers">  
                         
                           @foreach($drivers as $driver)
@@ -105,7 +141,35 @@
                           <script src="{{asset('jquery.min.js')}}"></script>
                           <script src="{{asset('bootstrap.min.js')}}"></script>
                           <script type="text/javascript">
-                          
+                          // Handle expense type radio button changes
+                          document.addEventListener('DOMContentLoaded', function() {
+                              const vehicleRadio = document.getElementById('vehicle_expense');
+                              const officeRadio = document.getElementById('office_expense');
+                              const vehicleFields = document.getElementById('vehicle-fields');
+                              const officeNotice = document.getElementById('office-notice');
+                              const carInput = document.getElementById('car_input');
+                              const driverInput = document.getElementById('driver_input');
+                              
+                              function toggleFields() {
+                                  if (officeRadio.checked) {
+                                      vehicleFields.style.display = 'none';
+                                      officeNotice.style.display = 'block';
+                                      carInput.removeAttribute('required');
+                                      carInput.value = '';
+                                      driverInput.value = '';
+                                  } else {
+                                      vehicleFields.style.display = 'block';
+                                      officeNotice.style.display = 'none';
+                                      carInput.setAttribute('required', 'required');
+                                  }
+                              }
+                              
+                              vehicleRadio.addEventListener('change', toggleFields);
+                              officeRadio.addEventListener('change', toggleFields);
+                              
+                              // Initialize
+                              toggleFields();
+                          });
                           </script>
                           <script type="text/javascript">
     jQuery(document).ready(function ()

@@ -84,15 +84,15 @@ class ChargesController extends Controller
              'payment_mode.*' => 'in:MoMo,Bank Transfer,Cash,Check',
          ]);
         $charge = new charge;
-        $charge->car_id = $request->input('car_id');
+        $charge->car_id = $request->input('car_id') ?: null;
         $charge->files = implode("|", $images);
         $charge->expense_id = $request->input('expense_id');
         $charge->driver_id = $request->input('driver_id');
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount');
         $charge->date = $request->input('date');
-    // Derive supplier from the selected car's supplier_id (cars table)
-    $car = Car::find($request->input('car_id'));
+    // Derive supplier from the selected car's supplier_id (cars table) - null for office expenses
+    $car = $request->input('car_id') ? Car::find($request->input('car_id')) : null;
     $charge->supplier = $car ? $car->supplier_id : null;
     $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();
@@ -145,14 +145,14 @@ class ChargesController extends Controller
         ]);
 
         $charge =  Charge::find($id);
-        $charge->car_id = $request->input('car_id');
+        $charge->car_id = $request->input('car_id') ?: null;
         $charge->expense_id = $request->input('expense_id');
         $charge->driver_id = $request->input('driver_id');
         $charge->roadmap = $request->input('roadmap');
         $charge->amount = $request->input('amount'); 
         $charge->date = $request->input('date');
-    // Derive supplier from the selected car's supplier_id on update as well
-    $car = Car::find($request->input('car_id'));
+    // Derive supplier from the selected car's supplier_id on update as well - null for office expenses
+    $car = $request->input('car_id') ? Car::find($request->input('car_id')) : null;
     $charge->supplier = $car ? $car->supplier_id : null;
         $charge->payment_mode = $request->has('payment_mode') ? implode(",", $request->input('payment_mode')) : null;
         $charge->save();

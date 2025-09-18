@@ -16,8 +16,8 @@
                       {{ csrf_field() }}
                       <input type="hidden" name="_method" value="put">
                       <div class="form-group">
-                        <label for="title">Car</label>
-                        <input type="" name="car_id" list="institutions" class="form-control" placeholder="Search Car" required="" id="txts" value="{{ $charge->car_id }}">
+                        <label for="title">Car <small class="text-muted">(Leave empty for Office Expenses)</small></label>
+                        <input type="" name="car_id" list="institutions" class="form-control" placeholder="Search Car (Optional for Office Expenses)" id="txts" value="{{ $charge->car_id }}">
                         <datalist id="institutions">  
                         
                           @foreach($cars as $car)
@@ -53,8 +53,8 @@
 
                       </div>
                       <div class="form-group">
-                        <label for="title">Driver</label>
-                        <input type="" name="driver_id" list="drivers" class="form-control" placeholder="Search Driver" id="txts" value="{{ $charge->driver_id }}">
+                        <label for="title">Driver <small class="text-muted">(Optional for Office Expenses)</small></label>
+                        <input type="" name="driver_id" list="drivers" class="form-control" placeholder="Search Driver (Optional)" id="txts" value="{{ $charge->driver_id }}">
                         <datalist id="drivers">  
                         
                           @foreach($drivers as $driver)
