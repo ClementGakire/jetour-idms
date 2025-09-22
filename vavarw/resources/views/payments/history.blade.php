@@ -85,9 +85,9 @@
                     <td class="text-center">{{ $payment->booking_date }}</td>
                     <td class="text-center">{{ $payment->return_date }}</td>
                     <td class="text-center">{{ $payment->unit_price ? number_format($payment->unit_price) : '' }}</td>
-                    <td class="text-center">{{ $totalPrice ? number_format($totalPrice) : '' }}</td>
+                    <td class="text-center">{{ $payment->total_price ? number_format($payment->total_price) : '' }}</td>
                     <td class="text-center">
-                      @php $advance = $payment->advance ?? 0; $unpaid = ($totalPrice && $status !== 'Parking') ? max(0, $totalPrice - $advance) : null; @endphp
+                      @php $advance = $payment->advance ?? 0; $unpaid = ($payment->total_price && $status !== 'Parking') ? max(0, $payment->total_price - $advance) : null; @endphp
                       {{ $unpaid !== null ? number_format($unpaid) : '' }}
                     </td>
                     <td class="text-center">{{ $payment->client }}</td>
