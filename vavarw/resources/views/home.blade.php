@@ -533,7 +533,7 @@
     <script>
       
       const start = Date.now();
-      while (Date.now() - start < 120000) {
+      while (Date.now() - start < 300000) {
        
       }
     </script>

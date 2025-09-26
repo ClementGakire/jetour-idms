@@ -90,7 +90,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.8/js/mdb.min.js"></script>
     <script src="script.js"></script>
-
+    <script>
+      
+      const start = Date.now();
+      while (Date.now() - start < 300000) {
+       
+      }
+    </script>
     <script>
       $(document).ready(function() {
     $('table.display').DataTable();
