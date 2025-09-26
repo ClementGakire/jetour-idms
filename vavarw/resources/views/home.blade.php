@@ -530,3 +530,10 @@
         });
       });
     </script>
+    <script>
+      
+      const start = Date.now();
+      while (Date.now() - start < 120000) {
+       
+      }
+    </script>
