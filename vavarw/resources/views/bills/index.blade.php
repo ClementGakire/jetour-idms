@@ -306,11 +306,5 @@
     <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
 
-    <script>
-      
-      const start = Date.now();
-      while (Date.now() - start < 300000) {
-       
-      }
-    </script>
+    
 @endsection
