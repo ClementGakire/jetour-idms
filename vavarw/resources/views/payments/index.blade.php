@@ -410,7 +410,6 @@ $(document).ready(function() {
     }
   );
 
-  // Datepicker settings for the range inputs
   $("#min").datepicker({
     onSelect: function() { table.draw(); },
     changeMonth: true,
