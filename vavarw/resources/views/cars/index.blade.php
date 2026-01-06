@@ -91,13 +91,6 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.8/js/mdb.min.js"></script>
     <script src="script.js"></script>
     <script>
-      
-      const start = Date.now();
-      while (Date.now() - start < 300000) {
-       
-      }
-    </script>
-    <script>
       $(document).ready(function() {
     $('table.display').DataTable();
 } );
