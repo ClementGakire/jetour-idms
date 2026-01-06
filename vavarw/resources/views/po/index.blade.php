@@ -1,7 +1,7 @@
 @include('inc.navbar')
 @extends('layouts.app')
 @section('content')
-@if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">
@@ -56,7 +56,7 @@
                 <th>Other Expenses</th>
                 <th>Balance to the supplier</th>
                 <th>Margin</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>Inserted By</th>
                 <th>action</th>
                 @endif
@@ -92,7 +92,7 @@
                 <td>{{$roadmap->total_charges}}</td>
                 <td>{{number_format(($roadmap->ebm_number * $roadmap->amount) - ($roadmap->advance_cash + $roadmap->advance_fuel + $roadmap->total_charges))}}</td>
                 <td>{{number_format(($roadmap->ebm_number * $roadmap->selling_price) - ($roadmap->ebm_number * $roadmap->amount)) }} </td>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <td>{{$roadmap->name}}</td>
         		<td class="text-left pl-4"><a href="/po/{{$roadmap->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a><a href="/po/{{$roadmap->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a></td>
                 @endif

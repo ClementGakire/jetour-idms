@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->role_id == 1)
+@if(Auth::user()->role_id == 1 || Auth::user()->id == 20)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">
@@ -32,7 +32,7 @@
                
                 <th>Total Expenses</th>
                 <th>Total Distance(Km)</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>action</th>
                 @endif
             </tr>
@@ -50,7 +50,7 @@
             
             <td>{{ number_format($car->total_charges) }}</td>
             <td>{{ number_format($car->total_odometer) }}</td>
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/cars/{{$car->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><a href="/cars/{{$car->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a><form action="{{ action('CarsController@destroy', [$car->id]) }}" method="POST">
                                  {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="delete">
@@ -71,7 +71,7 @@
                 <th>Owner</th>    
                 <th>Total Expenses</th>  
                 <th>Total Distance(Km)</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>Action</th>
                 @endif
             </tr>

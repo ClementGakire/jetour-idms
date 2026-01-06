@@ -25,7 +25,7 @@
                 <th>Name</th>
                 
                 
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>action</th>
                 @endif
             </tr>
@@ -38,7 +38,7 @@
         		
         		<td>{{ $expense->name }}</td>
         	
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/expenses/{{$expense->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('ExpensesController@destroy', [$expense->id]) }}" method="POST">
                                  {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="delete">

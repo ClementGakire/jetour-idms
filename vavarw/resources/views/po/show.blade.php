@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
 <p class="text-center text-primary "><a href="/po" class="">(Go Back)</a></p>
 <form action="{{ action('RoadmapController@destroy', [$roadmap->id]) }}" method="POST" class="text-center">
                       {{ csrf_field() }}

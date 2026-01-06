@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Payments') !== false)
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || strpos(Auth::user()->role_id, 'Payments') !== false)
 	
 	
 

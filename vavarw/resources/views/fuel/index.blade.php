@@ -1,7 +1,7 @@
 @include('inc.navbar')
 @extends('layouts.app')
 @section('content')
-@if(Auth::user()->role_id == 1 || 3)
+@if(Auth::user()->role_id == 1 || Auth::user()->id == 20 || 3)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">

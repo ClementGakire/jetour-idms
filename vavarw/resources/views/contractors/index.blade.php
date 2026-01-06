@@ -32,7 +32,7 @@
                                 <tr>
                                     <td>{{ $contractor->name }}</td>
                                     <td>{{ $contractor->tin }}</td>
-                                    @if(Auth::user()->id == 1)
+                                    @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                                     <td class="text-left pl-4">
                                         <a href="/contractors/{{$contractor->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a>
                                         <a href="/contractors/{{$contractor->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a>

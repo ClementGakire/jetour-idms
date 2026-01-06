@@ -3,7 +3,7 @@
 
 @section('content')
 	
-	@if(Auth::user()->id == 1)
+	@if(Auth::user()->id == 1 || Auth::user()->id == 20)
 	
 
 	<section style="padding-left: 60px; padding-top: 100px; padding-bottom: 100px;">

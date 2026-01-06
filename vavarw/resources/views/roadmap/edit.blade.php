@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->id == 1 || Auth::user()->role_id == 'Roadmap Return')
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || Auth::user()->role_id == 'Roadmap Return')
 	<section style="padding-left: 60px; padding-top: 100px; padding-bottom: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">

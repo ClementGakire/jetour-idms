@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-	@if(Auth::user()->role_id == 1)
+	@if(Auth::user()->role_id == 1 || Auth::user()->id == 20)
 	
 	
 

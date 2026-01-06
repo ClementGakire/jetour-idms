@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || strpos(Auth::user()->role_id, 'Roadmap Deployment') !== false)
 <!DOCTYPE html>
 <html lang="en">
   <head>

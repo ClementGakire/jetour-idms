@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->role_id == 1)
+@if(Auth::user()->role_id == 1 || Auth::user()->id == 20)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">
@@ -43,7 +43,7 @@
                 <th>P.O Number</th>
                 <th>Amount</th>
                 <th>Status</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>Inserted By</th>
                 <th>action</th>
                 @endif
@@ -69,7 +69,7 @@
                 @else
                 <td class="text-danger">Unpaid</td>
                 @endif
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <td>{{$invoice->username}}</td>
         		<td class="text-left pl-4"><a href="/invoices/{{$invoice->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a><a href="/invoices/{{$invoice->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('InvoiceController@destroy', [$invoice->id]) }}" method="POST">
                                  {{ csrf_field() }}

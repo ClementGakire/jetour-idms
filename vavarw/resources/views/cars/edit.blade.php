@@ -3,7 +3,7 @@
 
 @section('content')
 	
-	@if(Auth::user()->role_id == 1 || Auth::user()->role_id == 4)
+	@if(Auth::user()->role_id == 1 || Auth::user()->id == 20 || Auth::user()->role_id == 4)
 
 	<section style="padding-left: 60px; padding-top: 100px; padding-bottom: 100px;">
       <div class="container-fluid">

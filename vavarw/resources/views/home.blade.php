@@ -315,7 +315,7 @@
             
         </tfoot>
     </table>
-    @if(Auth::user()->id == 1)
+    @if(Auth::user()->id == 1 || Auth::user()->id == 20)
 
                 <h3 class="text-muted text-center mb-3 pt-3">User Performance</h3>
 

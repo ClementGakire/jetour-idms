@@ -25,7 +25,7 @@
                 <th>Name</th>
                 <th>Phone Number</th>
                 <th>License Number</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>action</th>
                 @endif
             </tr>
@@ -39,7 +39,7 @@
         		<td>{{ $driver->name }}</td>
             <td>{{ $driver->phone_number }}</td>
         	  <td>{{ $driver->license_number }}</td>
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/drivers/{{$driver->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a></td>@endif
         	</tr>
         	@endforeach
@@ -50,7 +50,7 @@
                 <th>Name</th>
                 <th>Phone Number</th>
                 <th>License Number</th>               
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>Action</th>
                 @endif
             </tr>

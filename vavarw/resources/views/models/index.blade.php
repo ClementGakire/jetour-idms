@@ -25,7 +25,7 @@
                 <th>Name</th>
                 <th>Supplier</th>
                 <th>Purchase Price</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>action</th>
                 @endif
             </tr>
@@ -39,7 +39,7 @@
         		<td>{{ $model->name }}</td>
         		<td>{{ $model->supplier }}</td>
         	    <td>RWF {{ number_format($model->supplier_price) }}</td>
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/models/{{$model->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('ModelController@destroy', [$model->id]) }}" method="POST">
                                  {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="delete">

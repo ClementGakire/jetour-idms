@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->id == 1 || Auth::user()->role_id == 'Roadmap Deployment')
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || Auth::user()->role_id == 'Roadmap Deployment')
 	
 	
 

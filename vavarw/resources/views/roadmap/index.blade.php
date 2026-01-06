@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->id == 1 || strpos(Auth::user()->role_id, 'Roadmap Return') !== false)
+@if(Auth::user()->id == 1 || Auth::user()->id == 20 || strpos(Auth::user()->role_id, 'Roadmap Return') !== false)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">
@@ -57,7 +57,7 @@
             <td class="text-center">{{ $roadmap->institution }}</td>
             <td class="text-center">{{ $roadmap->payment_date }}</td>
             <td class="text-center">{{ number_format($roadmap->amounts) }}</td>
-            @if(Auth::user()->id == 1)
+            @if(Auth::user()->id == 1 || Auth::user()->id == 20)
             <td class="text-center">{{ $roadmap->name }}</td>
             <td class="text-left pl-4"><a href=""><i class="fas fa-print" style="padding-right: 4px;"></i></a><a href="/roadmap/{{$roadmap->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a><a href="/roadmap/{{$roadmap->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a></td>@endif
           </tr>

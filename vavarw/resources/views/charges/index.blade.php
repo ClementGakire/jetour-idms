@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->role_id == 1 || 4)
+@if(Auth::user()->role_id == 1 || Auth::user()->id == 20 || 4)
 	<section style="padding-left: 60px; padding-top: 100px;">
       <div class="container-fluid">
         <div class="row mb-12">
@@ -55,7 +55,7 @@
                 <th>Date</th>
                 <th>Amount</th>
                 <th>Payment Mode</th>
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
 
                 <th>action</th>
                 @endif
@@ -81,7 +81,7 @@
                 <td>{{ $charge->date }}</td>
         	    <td>{{ number_format($charge->amount, 2) }}</td>
                 <td>{{ $charge->payment_mode }}</td>
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/charges/{{$charge->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a><form action="{{ action('ChargesController@destroy', [$charge->id]) }}" method="POST">
                                  {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="delete">

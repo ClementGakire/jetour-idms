@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-@if(Auth::user()->role_id == 3)
+@if(Auth::user()->role_id == 3 || Auth::user()->id == 20)
 <p class="text-center text-primary "><a href="/invoices" class="">(Go Back)</a></p>
 <form action="{{ action('InvoiceController@destroy', [$invoice->id]) }}" method="POST" class="text-center">
                       {{ csrf_field() }}

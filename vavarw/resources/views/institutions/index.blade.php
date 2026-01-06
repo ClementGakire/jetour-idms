@@ -25,7 +25,7 @@
                 <th>Name</th>
                 <th>Tin</th>
                 
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>action</th>
                 @endif
             </tr>
@@ -38,7 +38,7 @@
         		
         		<td>{{ $institution->name }}</td>
         		<td>{{ $institution->tin }}</td>
-        		@if(Auth::user()->id == 1)
+        		@if(Auth::user()->id == 1 || Auth::user()->id == 20)
         		<td class="text-left pl-4"><a href="/institutions/{{$institution->id}}"><i class="fas fa-eye" style="padding-right: 4px;"></i></a><a href="/institutions/{{$institution->id}}/edit"><i class="fas fa-edit text-success" style="padding-left: 4px;"></i></a></td>@endif
         	</tr>
         	@endforeach
@@ -49,7 +49,7 @@
                 <th>Name</th>
                 <th>Tin</th>
                 
-                @if(Auth::user()->id == 1)
+                @if(Auth::user()->id == 1 || Auth::user()->id == 20)
                 <th>Action</th>
                 @endif
             </tr>
